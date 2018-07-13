@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=640">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ChartJs Demo</title>
+    <link rel="stylesheet" href="./../assets/css/base.css">
+    <link rel="stylesheet" href="./../assets/css/chartjs.css">
+</head>
+
+<body>
+    <div class="content">
+        <canvas id="stackBarChart"></canvas>
+        <div id="currentTime"></div>
+        <canvas id="supplyPieChart"></canvas>
+        <canvas id="demandPieChart"></canvas>
+        <canvas id="lineChart"></canvas>
+        <canvas id="barChart"></canvas>
+    </div>
+    <!-- <script src="./../assets/js/dist/jquery.min.js"></script>
+    <script src="./../assets/js/dist/Chart.min.js"></script>
+    <script src="./../assets/js/chartjs.js"></script> -->
+</body>
+<!-- data-main:  define中的 ./ 相对于引入RequireJS的html -->
+<!-- require([]) define中的 ./ 相对于当前文件本身 -->
+<!-- 引入require.js -->
+<script type="text/javascript" src="./../assets/js/dist/require.min.js"></script>
+
+<script>
+    requirejs.config({
+        baseUrl: './../assets/js'
+    });
+</script>
+<script src="./../assets/js/config.js"></script>
+<!-- 引入config文件、引入入口文件-->
+<script>
+    require([
+        './../assets/js/chartjs.js'
+    ])
+</script>
+
+</html>

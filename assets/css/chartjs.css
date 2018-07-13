@@ -1,0 +1,30 @@
+.content {
+    width: 1000px;
+    margin: 0 auto;
+}
+
+#barChart,
+#stackBarChart,
+#lineChart,
+#supplyPieChart,
+#demandPieChart {
+    height: 30%;
+    margin: 0 auto;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#barChart,
+#lineChart,
+#stackBarChart,
+#currentTime {
+    width: 100%;
+    text-align: center;
+}
+
+#supplyPieChart,
+#demandPieChart {
+    width: 50% !important;
+    display: inline-block !important;
+    height: 50% !important;
+    float: left;
+}

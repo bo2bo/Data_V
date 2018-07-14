@@ -129,7 +129,7 @@ define(['jquery', 'echarts'], function($, echarts) {
                     axisLabel: {
                         margin: 10,
                         textStyle: {
-                            color: this.constConfig.labelColor,
+                            color: echartCommon.constConfig.labelColor,
                             fontSise: 10,
                         },
                         formatter: function(params) {
@@ -148,7 +148,7 @@ define(['jquery', 'echarts'], function($, echarts) {
                     axisLine: {
                         lineStyle: {
                             color: '#9c9ca0',
-                            width: this.constConfig.axisLineWidth,
+                            width: echartCommon.constConfig.axisLineWidth,
                             type: 'solid'
                         }
                     },
@@ -162,7 +162,7 @@ define(['jquery', 'echarts'], function($, echarts) {
                     },
                     splitArea: {
                         show: false,
-                    },
+                    }
                 },
                 yAxis: [{
                     type: 'value',
@@ -172,7 +172,7 @@ define(['jquery', 'echarts'], function($, echarts) {
                     boundaryGap: false,
                     axisLabel: {
                         margin: 12,
-                        color: this.constConfig.labelColor,
+                        color: echartCommon.constConfig.labelColor,
                         fontFamily: 'arial',
                         fontWeight: 'bolder',
                         fontSise: 10,
@@ -187,8 +187,8 @@ define(['jquery', 'echarts'], function($, echarts) {
                     axisLine: {
                         show: false,
                         lineStyle: {
-                            color: this.constConfig.axisLineColor, //y轴
-                            width: this.constConfig.axisLineWidth,
+                            color: echartCommon.constConfig.axisLineColor, //y轴
+                            width: echartCommon.constConfig.axisLineWidth,
                             type: 'solid'
                         }
                     },
@@ -214,7 +214,7 @@ define(['jquery', 'echarts'], function($, echarts) {
                     splitNumber: 4,
                     axisLabel: {
                         margin: 12,
-                        color: this.constConfig.labelColor,
+                        color: echartCommon.constConfig.labelColor,
                         fontFamily: 'arial',
                         fontWeight: 'bolder',
                         fontSise: 10,
@@ -229,8 +229,8 @@ define(['jquery', 'echarts'], function($, echarts) {
                     axisLine: {
                         show: false,
                         lineStyle: {
-                            color: this.constConfig.axisLineColor, //y轴
-                            width: this.constConfig.axisLineWidth,
+                            color: echartCommon.constConfig.axisLineColor, //y轴
+                            width: echartCommon.constConfig.axisLineWidth,
                             type: 'solid'
                         }
                     },

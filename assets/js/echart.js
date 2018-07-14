@@ -2,7 +2,7 @@ define(['jquery', 'echarts', 'echartCommon'], function($, echarts, echartCommon)
     $(function() {
         jumpLineChart = echarts.init(document.getElementById('jumpLineChart'));
         barLineChart = echarts.init(document.getElementById('barLineChart'));
-        drugLineChart = echarts.init(document.getElementById('drugLineChart'));
+        // drugLineChart = echarts.init(document.getElementById('drugLineChart'));
         colorMapChart = echarts.init(document.getElementById('colorMapChart'));
         pointMapChart = echarts.init(document.getElementById('pointMapChart'));
         // 折线柱状图
@@ -106,6 +106,389 @@ define(['jquery', 'echarts', 'echartCommon'], function($, echarts, echartCommon)
             option: pointMapOption,
             type: 'pointMap',
             dom: pointMapChart
+        });
+        // 线图拖拽功能
+        var dom = document.getElementById("drugLineChart");
+        var myChart = echarts.init(dom);
+        var app = {};
+        option = null;
+        var symbolSize = 20;
+        var lines = [{
+                id: 'a',
+                name: 'a',
+                data: [
+                    ["2016-09-30", 55],
+                    ["2016-10-31", 52],
+                    ["2016-11-30", 56],
+                    ["2016-12-31", 50],
+                    ["2017-01-31", 58],
+                    ["2017-02-28", 50],
+                    ["2017-03-31", 25],
+                    ["2017-04-30", 15],
+                    ["2017-05-31", 12],
+                    ["2017-06-30", 16],
+                    ["2017-07-31", 10],
+                    ["2017-08-31", 18],
+                    ["2017-09-30", 10],
+                    ["2017-10-31", 25],
+                    ["2017-11-30", 22],
+                    ["2017-12-31", 26],
+                    ["2018-01-31", 20],
+                    ["2018-02-28", 28],
+                    ["2018-03-31", 20],
+                    ["2018-04-30", 35],
+                    ["2018-05-31", 32],
+                    ["2018-06-30", 36],
+                    ["2018-07-31", 30],
+                    ["2018-08-31", 38],
+                    ["2018-09-30", 30],
+                ],
+                offsetXs: new Array(),
+                flag: true
+            },
+            {
+                id: 'b',
+                name: 'b',
+                data: [
+                    ["2016-09-30", 45],
+                    ["2016-10-31", 42],
+                    ["2016-11-30", 46],
+                    ["2016-12-31", 40],
+                    ["2017-01-31", 48],
+                    ["2017-02-28", 40],
+                    ["2017-03-31", 25],
+                    ["2017-04-30", 35],
+                    ["2017-05-31", 32],
+                    ["2017-06-30", 36],
+                    ["2017-07-31", 30],
+                    ["2017-08-31", 38],
+                    ["2017-09-30", 30],
+                    ["2017-10-31", 15],
+                    ["2017-11-30", 12],
+                    ["2017-12-31", 16],
+                    ["2018-01-31", 10],
+                    ["2018-02-28", 18],
+                    ["2018-03-31", 10],
+                    ["2018-04-30", 25],
+                    ["2018-05-31", 22],
+                    ["2018-06-30", 26],
+                    ["2018-07-31", 20],
+                    ["2018-08-31", 28],
+                    ["2018-09-30", 20],
+                ],
+                offsetXs: new Array(),
+                flag: true
+            },
+            {
+                id: 'c',
+                name: 'c',
+                data: [
+                    ["2016-09-30", 35],
+                    ["2016-10-31", 32],
+                    ["2016-11-30", 36],
+                    ["2016-12-31", 30],
+                    ["2017-01-31", 38],
+                    ["2017-02-28", 30],
+                    ["2017-03-31", 25],
+                    ["2017-04-30", 15],
+                    ["2017-05-31", 12],
+                    ["2017-06-30", 16],
+                    ["2017-07-31", 10],
+                    ["2017-08-31", 18],
+                    ["2017-09-30", 10],
+                    ["2017-10-31", 25],
+                    ["2017-11-30", 22],
+                    ["2017-12-31", 26],
+                    ["2018-01-31", 20],
+                    ["2018-02-28", 28],
+                    ["2018-03-31", 20],
+                    ["2018-04-30", 35],
+                    ["2018-05-31", 32],
+                    ["2018-06-30", 36],
+                    ["2018-07-31", 30],
+                    ["2018-08-31", 38],
+                    ["2018-09-30", 30],
+                ],
+                offsetXs: new Array(),
+                flag: true
+            },
+        ];
+        var points = [];
+        const LENGTH = lines[0].data.length - 13;
+        const PERCENT = 100 - 18 / lines[0].data.length * 100;
+        // 获取series数据
+        var seriesData = [];
+        for (var z = 0; z < lines.length; z++) {
+            var seriesObj = {
+                id: lines[z].id,
+                name: lines[z].name,
+                type: 'line',
+                smooth: true,
+                symbolSize: symbolSize,
+                data: lines[z].data,
+            };
+            seriesData.push(seriesObj);
+        }
+        option = {
+            title: {
+                text: '折线图拖拽',
+                left: 'center',
+                textStyle: {
+                    color: '#fff'
+                }
+            },
+            tooltip: {
+                triggerOn: 'none',
+                formatter: function(params) {
+                    if (typeof params.data[0] === "string") {
+                        return '指标: ' + params.seriesName + "<br>" + '时间: ' + params.data[0] + '<br/>数据: ' +
+                            params.data[1].toFixed(2);
+                    } else {
+                        return '指标: ' + params.seriesName + "<br>" + '时间: ' + params.name + '<br/>数据: ' +
+                            params.data[1];
+                    }
+                }
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'time',
+                position: 'bottom',
+                axisLine: {
+                    lineStyle: {
+                        color: '#9c9ca0',
+                        width: echartCommon.constConfig.axisLineWidth,
+                        type: 'solid'
+                    }
+                },
+                axisLabel: {
+                    margin: 10,
+                    textStyle: {
+                        color: echartCommon.constConfig.labelColor,
+                        fontSise: 10,
+                    },
+                    formatter: function(params) {
+                        var year = (new Date(params)).getFullYear();
+                        var month = (new Date(params)).getMonth() + 1;
+                        if (month < 10) {
+                            month = '0' + month;
+                        }
+                        var date = (new Date(params)).getDate();
+                        if (date < 10) {
+                            date = '0' + date;
+                        }
+                        return year + '-' + month + '-' + date;
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#9c9ca0',
+                            width: echartCommon.constConfig.axisLineWidth,
+                            type: 'solid'
+                        }
+                    },
+                    axisTick: {
+                        show: false,
+                        alignWithLabel: true,
+                        inside: true
+                    },
+                    splitLine: {
+                        show: false,
+                    },
+                    splitArea: {
+                        show: false,
+                    }
+                },
+            },
+            yAxis: {
+                type: 'value',
+                nameGap: 10,
+                scale: true, //脱离0值比例
+                splitNumber: 4,
+                boundaryGap: false,
+                axisLabel: {
+                    margin: 12,
+                    color: echartCommon.constConfig.labelColor,
+                    fontFamily: 'arial',
+                    fontWeight: 'bolder',
+                    fontSise: 10,
+                    formatter: function(v) {
+                        if (1) {
+                            return v.toFixed(1);
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                axisLine: {
+                    show: false,
+                    lineStyle: {
+                        color: echartCommon.constConfig.axisLineColor, //y轴
+                        width: echartCommon.constConfig.axisLineWidth,
+                        type: 'solid'
+                    }
+                },
+                axisTick: {
+                    onGap: false,
+                    show: false,
+                },
+                splitArea: {
+                    show: false
+                },
+                splitLine: {
+                    show: true,
+                    lineStyle: {
+                        color: '#62636d'
+                    }
+                },
+                axisPointer: {
+                    show: false,
+                }
+            },
+            dataZoom: [{
+                    show: false,
+                    type: 'inside',
+                },
+                {
+                    height: 3,
+                    backgroundColor: '#B4B4B3',
+                    borderColor: 'transparent',
+                    fillerColor: '#00D8FF',
+                    showDetail: false,
+                    handleSize: 12,
+                    handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+                    handleStyle: {
+                        color: '#00D8FF',
+                        shadowBlur: 8,
+                        shadowColor: '#4795B4',
+                        shadowOffsetX: 2,
+                        shadowOffsetY: 2
+                    },
+                    bottom: '1.5%'
+                }
+            ],
+            graphic: [],
+            series: seriesData
+        };
+
+        function addDrag(line) {
+            if (!app.inNode) {
+                var graphicObj = [];
+                setTimeout(function() {
+                    for (var i = 0; i < line.length; i++) {
+                        var dataObj = {};
+                        graphic: echarts.util.map(line[i].data, function(item, dataIndex) {
+                            if (dataIndex > LENGTH) {
+                                var dataObj = {
+                                    type: 'circle',
+                                    position: myChart.convertToPixel('grid', item),
+                                    shape: {
+                                        cx: 0,
+                                        cy: 0,
+                                        r: symbolSize / 2
+                                    },
+                                    invisible: true,
+                                    draggable: true,
+                                    ondrag: echarts.util.curry(onPointDragging, line[i], dataIndex),
+                                    onmousemove: echarts.util.curry(showTooltip, i, dataIndex),
+                                    onmouseout: echarts.util.curry(hideTooltip, dataIndex),
+                                    z: 100
+                                };
+                            } else {
+                                var dataObj = {
+                                    type: 'circle',
+                                    position: myChart.convertToPixel('grid', item),
+                                    shape: {
+                                        cx: 0,
+                                        cy: 0,
+                                        r: symbolSize / 2
+                                    },
+                                    invisible: true,
+                                    draggable: false,
+                                    ondrag: echarts.util.curry(onPointDragging, line[i], dataIndex),
+                                    onmousemove: echarts.util.curry(showTooltip, i, dataIndex),
+                                    onmouseout: echarts.util.curry(hideTooltip, dataIndex),
+                                    z: 100
+                                };
+                            }
+                            graphicObj.push(dataObj);
+                        })
+                    }
+                }, 0);
+                setTimeout(function() {
+                    myChart.setOption({
+                        graphic: graphicObj
+                    });
+                }, 100);
+            }
+        };
+
+        addDrag(lines);
+
+        myChart.on('dataZoom', function() {
+            updatePosition(lines);
+        });
+
+        window.addEventListener('resize', function() {
+            updatePosition(lines);
+        });
+
+        function updatePosition(line) {
+            var graphicObj = [];
+            for (var j = 0; j < line.length; j++) {
+                graphic: echarts.util.map(line[j].data, function(item, dataIndex) {
+                    var dataObj = {
+                        position: myChart.convertToPixel('grid', item)
+                    };
+                    graphicObj.push(dataObj);
+                })
+            }
+            myChart.setOption({
+                graphic: graphicObj
+            });
+        };
+
+        function showTooltip(index, dataIndex) {
+            myChart.dispatchAction({
+                type: 'showTip',
+                seriesIndex: index,
+                dataIndex: dataIndex
+            });
+        };
+
+        function hideTooltip(dataIndex) {
+            myChart.dispatchAction({
+                type: 'hideTip'
+            });
+        };
+
+        function onPointDragging(line, dataIndex, dx, dy) {
+            var dateData = line.data[dataIndex][0];
+            this.position[0] = myChart.convertToPixel('grid', line.data[dataIndex])[0];
+            line.data[dataIndex] = myChart.convertFromPixel('grid', this.position);
+            line.data[dataIndex][0] = dateData;
+            myChart.setOption({
+                series: [{
+                    id: line.id,
+                    data: line.data
+                }]
+            });
+        };
+
+        if (option && typeof option === "object") {
+            myChart.setOption(option, true);
+        };
+        // 图表自适应
+        window.addEventListener("resize", function() {
+            jumpLineChart.resize();
+            barLineChart.resize();
+            // drugLineChart.resize();
+            myChart.resize();
+            colorMapChart.resize();
+            pointMapChart.resize();
         });
     })
 });

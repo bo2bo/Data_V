@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=640">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>EchartJs Demo</title>
+    <link rel="stylesheet" href="./../assets/css/base.css">
+    <link rel="stylesheet" href="./../assets/css/echarts.css">
+</head>
+
+<body>
+    <div class="content">
+        <div id="jumpLineChart"></div>
+        <div id="barLineChart"></div>
+        <div id="colorMapChart"></div>
+        <div id="pointMapChart"></div>
+        <div id="drugLineChart"></div>
+    </div>
+</body>
+<script type="text/javascript" src="./../assets/js/dist/require.min.js"></script>
+
+<!-- 避免出现插件未加载完成就执行js代码 -->
+<script>
+    requirejs.config({
+        baseUrl: './../assets/js'
+    });
+</script>
+<script src="./../assets/js/config.js"></script>
+<script>
+    require([
+        './../assets/js/echart.js'
+    ])
+</script>
+
+</html>

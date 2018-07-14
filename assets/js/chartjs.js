@@ -1,5 +1,5 @@
-define(['jquery', 'Chart'], function ($, Chart) {
-    $(function () {
+define(['jquery', 'Chart'], function($, Chart) {
+    $(function() {
         var paramObj = {
             barColoObj: {
                 'EXP': '#ff9600',
@@ -25,7 +25,7 @@ define(['jquery', 'Chart'], function ($, Chart) {
                 datatype: 'json',
                 data: null,
                 async: false, //同步
-                success: function (result) {
+                success: function(result) {
                     var data = result.data;
                     var barSerielabels = [];
                     if (data.length != 0) {
@@ -66,7 +66,7 @@ define(['jquery', 'Chart'], function ($, Chart) {
                         }
                     }
                 },
-                error: function (e) {
+                error: function(e) {
                     console.log(e);
                 }
             })
@@ -87,7 +87,7 @@ define(['jquery', 'Chart'], function ($, Chart) {
                         intersect: false,
                         // 相当于echarts里面的formatter函数
                         callbacks: {
-                            label: function (tooltipItem, data) {
+                            label: function(tooltipItem, data) {
                                 var label = data.datasets[tooltipItem.datasetIndex].label || '';
                                 if (label) {
                                     label += ': ';
@@ -106,13 +106,13 @@ define(['jquery', 'Chart'], function ($, Chart) {
                             stacked: true,
                             // 相当于echarts里面的formatter函数
                             ticks: {
-                                callback: function (value, index, values) {
+                                callback: function(value, index, values) {
                                     return Math.abs(value);
                                 }
                             }
                         }]
                     },
-                    onClick: function (event, array) {
+                    onClick: function(event, array) {
                         if (array.length != 0) {
                             paramObj.barIndex = array[0]._index;
                             getPieData();
@@ -131,22 +131,22 @@ define(['jquery', 'Chart'], function ($, Chart) {
                     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
                     datasets: [{
                         label: 'My First dataset',
-                        backgroundColor: 'red',
-                        borderColor: 'red',
+                        backgroundColor: '#a5ff4d',
+                        borderColor: '#a5ff4d',
                         data: [5, 2, 6, 8, 0, 4, 1],
                         fill: false,
                     }, {
                         label: 'My Second dataset',
                         fill: false,
-                        backgroundColor: 'blue',
-                        borderColor: 'blue',
-                        data: [4, 7, 0, 4, 7, 3, 5],
+                        backgroundColor: '#fffc00',
+                        borderColor: '#fffc00',
+                        data: [4, 7, 9, 4, 7, 3, 5],
                     }]
                 },
                 options: {
                     responsive: true,
                     title: {
-                        display: true,
+                        display: false,
                         text: 'Chart.js Line Chart'
                     },
                     tooltips: {
@@ -157,16 +157,25 @@ define(['jquery', 'Chart'], function ($, Chart) {
                         xAxes: [{
                             display: true,
                             scaleLabel: {
-                                display: true,
+                                display: false,
                                 labelString: 'Month'
+                            },
+                            gridLines: {
+                                display: false,
+                                drawBorder: false
                             }
                         }],
                         yAxes: [{
                             display: true,
                             scaleLabel: {
-                                display: true,
+                                display: false,
                                 labelString: 'Value'
-                            }
+                            },
+                            // gridLines: {
+                            //     display: true,
+                            //     drawBorder: false,
+                            //     color: '#fff'
+                            // }
                         }]
                     }
                 }
@@ -182,22 +191,22 @@ define(['jquery', 'Chart'], function ($, Chart) {
                     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
                     datasets: [{
                         label: 'My First dataset',
-                        backgroundColor: 'red',
-                        borderColor: 'red',
+                        backgroundColor: '#a5ff4d',
+                        borderColor: '#a5ff4d',
                         data: [5, 2, 6, 8, 12, 4, 1],
                         fill: false,
                     }, {
                         label: 'My Second dataset',
                         fill: false,
-                        backgroundColor: 'blue',
-                        borderColor: 'blue',
-                        data: [4, 7, 0, 4, 7, 3, 5],
+                        backgroundColor: '#fffc00',
+                        borderColor: '#fffc00',
+                        data: [4, 7, 9, 4, 7, 3, 5],
                     }]
                 },
                 options: {
                     responsive: true,
                     title: {
-                        display: true,
+                        display: false,
                         text: 'Chart.js Bar Chart'
                     },
                     tooltips: {
@@ -208,14 +217,14 @@ define(['jquery', 'Chart'], function ($, Chart) {
                         xAxes: [{
                             display: true,
                             scaleLabel: {
-                                display: true,
+                                display: false,
                                 labelString: 'Month'
                             }
                         }],
                         yAxes: [{
                             display: true,
                             scaleLabel: {
-                                display: true,
+                                display: false,
                                 labelString: 'Value'
                             }
                         }]
@@ -280,9 +289,9 @@ define(['jquery', 'Chart'], function ($, Chart) {
                     tooltips: {
                         enabled: true,
                         callbacks: {
-                            footer: function (tooltipItems, data) {
+                            footer: function(tooltipItems, data) {
                                 var sum = 0;
-                                data.datasets[0].data.forEach(function (data) {
+                                data.datasets[0].data.forEach(function(data) {
                                     sum += Math.abs(data);
                                 });
                                 var currentData = Math.abs(data.datasets[tooltipItems[0].datasetIndex].data[tooltipItems[0].index]);

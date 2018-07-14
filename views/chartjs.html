@@ -12,16 +12,17 @@
 
 <body>
     <div class="content">
+        <h2>堆积图</h2>
         <canvas id="stackBarChart"></canvas>
+        <h2>饼图</h2>
         <div id="currentTime"></div>
         <canvas id="supplyPieChart"></canvas>
         <canvas id="demandPieChart"></canvas>
+        <h2>折线图</h2>
         <canvas id="lineChart"></canvas>
+        <h2>柱状图</h2>
         <canvas id="barChart"></canvas>
     </div>
-    <!-- <script src="./../assets/js/dist/jquery.min.js"></script>
-    <script src="./../assets/js/dist/Chart.min.js"></script>
-    <script src="./../assets/js/chartjs.js"></script> -->
 </body>
 <!-- data-main:  define中的 ./ 相对于引入RequireJS的html -->
 <!-- require([]) define中的 ./ 相对于当前文件本身 -->
@@ -33,8 +34,8 @@
         baseUrl: './../assets/js'
     });
 </script>
-<script src="./../assets/js/config.js"></script>
 <!-- 引入config文件、引入入口文件-->
+<script src="./../assets/js/config.js"></script>
 <script>
     require([
         './../assets/js/chartjs.js'

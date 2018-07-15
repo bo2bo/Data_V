@@ -288,7 +288,6 @@ define(['jquery', 'echarts'], function($, echarts) {
         //请求带闪烁的option数据
         getOptionData: function(param) {
             var resjson;
-            var value = new Array();
             $.ajax({
                 type: "get",
                 url: param.url,

@@ -108,114 +108,14 @@ define(['jquery', 'echarts', 'echartCommon'], function($, echarts, echartCommon)
             dom: pointMapChart
         });
         // 线图拖拽功能
-        var dom = document.getElementById("drugLineChart");
-        var myChart = echarts.init(dom);
+        var myChart = echarts.init(document.getElementById("drugLineChart"));
         var app = {};
         option = null;
         var symbolSize = 20;
-        var lines = [{
-                id: 'a',
-                name: 'a',
-                data: [
-                    ["2016-09-30", 55],
-                    ["2016-10-31", 52],
-                    ["2016-11-30", 56],
-                    ["2016-12-31", 50],
-                    ["2017-01-31", 58],
-                    ["2017-02-28", 50],
-                    ["2017-03-31", 25],
-                    ["2017-04-30", 15],
-                    ["2017-05-31", 12],
-                    ["2017-06-30", 16],
-                    ["2017-07-31", 10],
-                    ["2017-08-31", 18],
-                    ["2017-09-30", 10],
-                    ["2017-10-31", 25],
-                    ["2017-11-30", 22],
-                    ["2017-12-31", 26],
-                    ["2018-01-31", 20],
-                    ["2018-02-28", 28],
-                    ["2018-03-31", 20],
-                    ["2018-04-30", 35],
-                    ["2018-05-31", 32],
-                    ["2018-06-30", 36],
-                    ["2018-07-31", 30],
-                    ["2018-08-31", 38],
-                    ["2018-09-30", 30],
-                ],
-                offsetXs: new Array(),
-                flag: true
-            },
-            {
-                id: 'b',
-                name: 'b',
-                data: [
-                    ["2016-09-30", 45],
-                    ["2016-10-31", 42],
-                    ["2016-11-30", 46],
-                    ["2016-12-31", 40],
-                    ["2017-01-31", 48],
-                    ["2017-02-28", 40],
-                    ["2017-03-31", 25],
-                    ["2017-04-30", 35],
-                    ["2017-05-31", 32],
-                    ["2017-06-30", 36],
-                    ["2017-07-31", 30],
-                    ["2017-08-31", 38],
-                    ["2017-09-30", 30],
-                    ["2017-10-31", 15],
-                    ["2017-11-30", 12],
-                    ["2017-12-31", 16],
-                    ["2018-01-31", 10],
-                    ["2018-02-28", 18],
-                    ["2018-03-31", 10],
-                    ["2018-04-30", 25],
-                    ["2018-05-31", 22],
-                    ["2018-06-30", 26],
-                    ["2018-07-31", 20],
-                    ["2018-08-31", 28],
-                    ["2018-09-30", 20],
-                ],
-                offsetXs: new Array(),
-                flag: true
-            },
-            {
-                id: 'c',
-                name: 'c',
-                data: [
-                    ["2016-09-30", 35],
-                    ["2016-10-31", 32],
-                    ["2016-11-30", 36],
-                    ["2016-12-31", 30],
-                    ["2017-01-31", 38],
-                    ["2017-02-28", 30],
-                    ["2017-03-31", 25],
-                    ["2017-04-30", 15],
-                    ["2017-05-31", 12],
-                    ["2017-06-30", 16],
-                    ["2017-07-31", 10],
-                    ["2017-08-31", 18],
-                    ["2017-09-30", 10],
-                    ["2017-10-31", 25],
-                    ["2017-11-30", 22],
-                    ["2017-12-31", 26],
-                    ["2018-01-31", 20],
-                    ["2018-02-28", 28],
-                    ["2018-03-31", 20],
-                    ["2018-04-30", 35],
-                    ["2018-05-31", 32],
-                    ["2018-06-30", 36],
-                    ["2018-07-31", 30],
-                    ["2018-08-31", 38],
-                    ["2018-09-30", 30],
-                ],
-                offsetXs: new Array(),
-                flag: true
-            },
-        ];
-        var points = [];
+        var lines = echartCommon.getOptionData({
+            url: './../assets/js/json/drugLineData.json'
+        });
         const LENGTH = lines[0].data.length - 13;
-        const PERCENT = 100 - 18 / lines[0].data.length * 100;
         // 获取series数据
         var seriesData = [];
         for (var z = 0; z < lines.length; z++) {
@@ -422,17 +322,13 @@ define(['jquery', 'echarts', 'echartCommon'], function($, echarts, echartCommon)
                     myChart.setOption({
                         graphic: graphicObj
                     });
-                }, 100);
+                }, 0);
             }
         };
 
         addDrag(lines);
 
         myChart.on('dataZoom', function() {
-            updatePosition(lines);
-        });
-
-        window.addEventListener('resize', function() {
             updatePosition(lines);
         });
 
@@ -487,6 +383,7 @@ define(['jquery', 'echarts', 'echartCommon'], function($, echarts, echartCommon)
             barLineChart.resize();
             // drugLineChart.resize();
             myChart.resize();
+            updatePosition(lines);
             colorMapChart.resize();
             pointMapChart.resize();
         });

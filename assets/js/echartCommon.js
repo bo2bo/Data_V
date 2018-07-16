@@ -1,4 +1,4 @@
-define(['jquery', 'echarts'], function($, echarts) {
+define(['jquery', 'echarts'], function ($, echarts) {
     var jumpIntervalMap = new Object();
     var echartCommon = {
         constConfig: {
@@ -13,7 +13,7 @@ define(['jquery', 'echarts'], function($, echarts) {
             lineColor: '#ffff00'
         },
         // 获取最大值最小值
-        getMaxAndMin: function(data) {
+        getMaxAndMin: function (data) {
             var valueData = [];
             for (var i = 0; i < data.length; i++) {
                 valueData.push(data[i].value)
@@ -34,7 +34,7 @@ define(['jquery', 'echarts'], function($, echarts) {
             }
         },
         // yyyy-mm-dd转Date类型
-        time2Datetime: function(array) {
+        time2Datetime: function (array) {
             var copyArray = new Array();
             for (var i = 0; i < array.length; i++) {
                 if (array[i].flag == 1) {
@@ -46,7 +46,7 @@ define(['jquery', 'echarts'], function($, echarts) {
             return copyArray;
         },
         //定制option
-        getJumpOption: function(params) {
+        getJumpOption: function (params) {
             var resjson;
             var option = {
                 tooltip: {
@@ -56,7 +56,7 @@ define(['jquery', 'echarts'], function($, echarts) {
                         type: 'line',
                         label: {
                             show: true,
-                            formatter: function(v) {
+                            formatter: function (v) {
                                 var date = new Date(v.value);
                                 return date.getFullYear() + '-' + (parseInt(date.getMonth()) + 1) + '-' + date.getDate();
                             }
@@ -67,7 +67,7 @@ define(['jquery', 'echarts'], function($, echarts) {
                         }
                     },
                     showDelay: 0,
-                    formatter: function(params) {
+                    formatter: function (params) {
                         var tips = '';
                         var date;
                         if (Array.isArray(params)) {
@@ -132,7 +132,7 @@ define(['jquery', 'echarts'], function($, echarts) {
                             color: echartCommon.constConfig.labelColor,
                             fontSise: 10,
                         },
-                        formatter: function(params) {
+                        formatter: function (params) {
                             var year = (new Date(params)).getFullYear();
                             var month = (new Date(params)).getMonth() + 1;
                             if (month < 10) {
@@ -176,7 +176,7 @@ define(['jquery', 'echarts'], function($, echarts) {
                         fontFamily: 'arial',
                         fontWeight: 'bolder',
                         fontSise: 10,
-                        formatter: function(v) {
+                        formatter: function (v) {
                             if (1) {
                                 return v.toFixed(1);
                             } else {
@@ -218,7 +218,7 @@ define(['jquery', 'echarts'], function($, echarts) {
                         fontFamily: 'arial',
                         fontWeight: 'bolder',
                         fontSise: 10,
-                        formatter: function(v) {
+                        formatter: function (v) {
                             if (1) {
                                 return v.toFixed(1);
                             } else {
@@ -251,7 +251,7 @@ define(['jquery', 'echarts'], function($, echarts) {
                         show: false,
                     }
                 }],
-                series: function() {
+                series: function () {
                     var serie = [];
                     resjson = echartCommon.getOptionData({
                         url: params.url
@@ -286,16 +286,16 @@ define(['jquery', 'echarts'], function($, echarts) {
         },
 
         //请求带闪烁的option数据
-        getOptionData: function(param) {
+        getOptionData: function (param) {
             var resjson;
             $.ajax({
                 type: "get",
                 url: param.url,
                 async: false, //同步
-                success: function(result) {
+                success: function (result) {
                     resjson = result;
                 },
-                error: function(err) {
+                error: function (err) {
                     console.log(err)
                 }
             });
@@ -303,7 +303,7 @@ define(['jquery', 'echarts'], function($, echarts) {
         },
 
         //预测折线图闪烁
-        jumpChart: function(param) {
+        jumpChart: function (param) {
             var option = param.option,
                 id = param.dom.id,
                 opacity = 1,
@@ -322,7 +322,7 @@ define(['jquery', 'echarts'], function($, echarts) {
                 }
             }
             // 设置dataZoom
-            param.dom.on('datazoom', function(params) {
+            param.dom.on('datazoom', function (params) {
                 chartStart = params.start;
                 chartEnd = params.end;
             });
@@ -344,7 +344,7 @@ define(['jquery', 'echarts'], function($, echarts) {
             if (thisJumpInterval) {
                 clearInterval(thisJumpInterval);
             }
-            thisJumpInterval = setInterval(function() {
+            thisJumpInterval = setInterval(function () {
                 if (opacity == 1) {
                     flagOpcity = 2;
                 }
@@ -395,7 +395,7 @@ define(['jquery', 'echarts'], function($, echarts) {
         },
 
         //色温图配置
-        colorMapOption: function(param) {
+        colorMapOption: function (param) {
             var option = {
                 baseOption: {
                     visualMap: {
@@ -440,7 +440,7 @@ define(['jquery', 'echarts'], function($, echarts) {
                             },
                             backgroundColor: 'rgba(50,50,50,0.3)',
                             position: 'top',
-                            formatter: function(result) {
+                            formatter: function (result) {
                                 return result.name;
                             },
                         },
@@ -525,8 +525,8 @@ define(['jquery', 'echarts'], function($, echarts) {
                 baseOption: {
                     tooltip: {
                         trigger: 'item',
-                        formatter: function(result) {
-                            if (typeof(result.value) == 'object') {
+                        formatter: function (result) {
+                            if (typeof (result.value) == 'object') {
                                 return paramObj.mapTime + '<br />' + result.name + '<br/>数据：' + result.value[2].toFixed(2);
                             } else {
                                 return result.name;
@@ -576,7 +576,7 @@ define(['jquery', 'echarts'], function($, echarts) {
                             },
                             backgroundColor: 'rgba(50,50,50,0.3)',
                             position: 'top',
-                            formatter: function(result) { //回调函数，参数params具体格式参加官方API
+                            formatter: function (result) { //回调函数，参数params具体格式参加官方API
                                 return result.name;
                             }
                         }
@@ -643,7 +643,7 @@ define(['jquery', 'echarts'], function($, echarts) {
             $.ajax({
                 url: param.url,
                 type: 'get',
-                success: function(result) {
+                success: function (result) {
                     if (param.type == 'colorMap') {
                         if (result.datas.length) {
                             var timeData = [],
@@ -687,7 +687,7 @@ define(['jquery', 'echarts'], function($, echarts) {
                         param.dom.setOption(param.option, true);
                     }
                 },
-                error: function(err) {
+                error: function (err) {
                     console.log(err);
                 }
             })
@@ -695,7 +695,7 @@ define(['jquery', 'echarts'], function($, echarts) {
 
         // 显示地图
         showMap(param) {
-            $.get(param.mapUrl, function(mapJson) {
+            $.get(param.mapUrl, function (mapJson) {
                 echarts.registerMap('china', mapJson);
                 echartCommon.getMapData({
                     url: param.dataUrl,
@@ -704,6 +704,258 @@ define(['jquery', 'echarts'], function($, echarts) {
                     dom: param.dom
                 });
             })
+        },
+
+        drugOption(param) {
+            var option = {
+                title: {
+                    text: param.title,
+                    left: 'center',
+                    textStyle: {
+                        color: '#fff'
+                    }
+                },
+                tooltip: {
+                    triggerOn: 'none',
+                    formatter: function (params) {
+                        if (typeof params.data[0] === "string") {
+                            return '指标: ' + params.seriesName + "<br>" + '时间: ' + params.data[0] + '<br/>数据: ' +
+                                params.data[1].toFixed(2);
+                        } else {
+                            return '指标: ' + params.seriesName + "<br>" + '时间: ' + params.name + '<br/>数据: ' +
+                                params.data[1];
+                        }
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'time',
+                    position: 'bottom',
+                    axisLine: {
+                        lineStyle: {
+                            color: '#9c9ca0',
+                            width: echartCommon.constConfig.axisLineWidth,
+                            type: 'solid'
+                        }
+                    },
+                    axisLabel: {
+                        margin: 10,
+                        textStyle: {
+                            color: echartCommon.constConfig.labelColor,
+                            fontSise: 10,
+                        },
+                        formatter: function (params) {
+                            var year = (new Date(params)).getFullYear();
+                            var month = (new Date(params)).getMonth() + 1;
+                            if (month < 10) {
+                                month = '0' + month;
+                            }
+                            var date = (new Date(params)).getDate();
+                            if (date < 10) {
+                                date = '0' + date;
+                            }
+                            return year + '-' + month + '-' + date;
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: '#9c9ca0',
+                                width: echartCommon.constConfig.axisLineWidth,
+                                type: 'solid'
+                            }
+                        },
+                        axisTick: {
+                            show: false,
+                            alignWithLabel: true,
+                            inside: true
+                        },
+                        splitLine: {
+                            show: false,
+                        },
+                        splitArea: {
+                            show: false,
+                        }
+                    },
+                },
+                yAxis: {
+                    type: 'value',
+                    nameGap: 10,
+                    scale: true, //脱离0值比例
+                    splitNumber: 4,
+                    boundaryGap: false,
+                    axisLabel: {
+                        margin: 12,
+                        color: echartCommon.constConfig.labelColor,
+                        fontFamily: 'arial',
+                        fontWeight: 'bolder',
+                        fontSise: 10,
+                        formatter: function (v) {
+                            if (1) {
+                                return v.toFixed(1);
+                            } else {
+                                return '';
+                            }
+                        }
+                    },
+                    axisLine: {
+                        show: false,
+                        lineStyle: {
+                            color: echartCommon.constConfig.axisLineColor, //y轴
+                            width: echartCommon.constConfig.axisLineWidth,
+                            type: 'solid'
+                        }
+                    },
+                    axisTick: {
+                        onGap: false,
+                        show: false,
+                    },
+                    splitArea: {
+                        show: false
+                    },
+                    splitLine: {
+                        show: true,
+                        lineStyle: {
+                            color: '#62636d'
+                        }
+                    },
+                    axisPointer: {
+                        show: false,
+                    }
+                },
+                dataZoom: [{
+                        show: false,
+                        type: 'inside',
+                    },
+                    {
+                        height: 3,
+                        backgroundColor: '#B4B4B3',
+                        borderColor: 'transparent',
+                        fillerColor: '#00D8FF',
+                        showDetail: false,
+                        handleSize: 12,
+                        handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+                        handleStyle: {
+                            color: '#00D8FF',
+                            shadowBlur: 8,
+                            shadowColor: '#4795B4',
+                            shadowOffsetX: 2,
+                            shadowOffsetY: 2
+                        },
+                        bottom: '1.5%'
+                    }
+                ],
+                graphic: [],
+                series: function () {
+                    var seriesData = [];
+                    for (var z = 0; z < param.data.length; z++) {
+                        var seriesObj = {
+                            id: param.data[z].id,
+                            name: param.data[z].name,
+                            type: 'line',
+                            smooth: true,
+                            symbolSize: 20,
+                            data: param.data[z].data,
+                        };
+                        seriesData.push(seriesObj);
+                    }
+                    return seriesData;
+                }()
+            };
+            param.dom.setOption(option, true);
+        },
+        // 拖拽函数
+        drugFun(param) {
+            var graphicObj = [];
+            setTimeout(function () {
+                for (var i = 0; i < param.data.length; i++) {
+                    var dataObj = {};
+                    graphic: echarts.util.map(param.data[i].data, function (item, dataIndex) {
+                        // if (dataIndex > LENGTH) {
+                        dataObj = {
+                            type: 'circle',
+                            position: param.dom.convertToPixel('grid', item),
+                            shape: {
+                                cx: 0,
+                                cy: 0,
+                                r: 10
+                            },
+                            invisible: false,
+                            draggable: true,
+                            ondrag: echarts.util.curry(echartCommon.onPointDragging, param.data[i], dataIndex, param.dom),
+                            onmousemove: echarts.util.curry(echartCommon.showTooltip, i, dataIndex, param.dom),
+                            onmouseout: echarts.util.curry(echartCommon.hideTooltip, dataIndex, param.dom),
+                            z: 100
+                        };
+                        // } else {
+                        //     dataObj = {
+                        //         type: 'circle',
+                        //         position: myChart.convertToPixel('grid', item),
+                        //         shape: {
+                        //             cx: 0,
+                        //             cy: 0,
+                        //             r: 10
+                        //         },
+                        //         invisible: false,
+                        //         draggable: true,
+                        //         ondrag: echarts.util.curry(echartCommon.onPointDragging, param.data[i], dataIndex, param.dom),
+                        //         onmousemove: echarts.util.curry(echartCommon.showTooltip, i, dataIndex, param.dom),
+                        //         onmouseout: echarts.util.curry(echartCommon.hideTooltip, dataIndex, param.dom),
+                        //         z: 100
+                        //     };
+                        // }
+                        graphicObj.push(dataObj);
+                    })
+                }
+            }, 0);
+            setTimeout(function () {
+                param.dom.setOption({
+                    graphic: graphicObj
+                });
+            }, 100);
+        },
+        // tooltip函数
+        showTooltip(index, dataIndex, dom) {
+            dom.dispatchAction({
+                type: 'showTip',
+                seriesIndex: index,
+                dataIndex: dataIndex
+            });
+        },
+        hideTooltip(dataIndex, dom) {
+            dom.dispatchAction({
+                type: 'hideTip'
+            });
+        },
+        // point拖拽过程的函数
+        onPointDragging(line, dataIndex, dom) {
+            var dateData = line.data[dataIndex][0];
+            this.position[0] = dom.convertToPixel('grid', line.data[dataIndex])[0];
+            line.data[dataIndex] = dom.convertFromPixel('grid', this.position);
+            line.data[dataIndex][0] = dateData;
+            dom.setOption({
+                series: [{
+                    id: line.id,
+                    data: line.data
+                }]
+            });
+        },
+        updatePosition(param) {
+            var graphicObj = [];
+            for (var j = 0; j < param.data.length; j++) {
+                graphic: echarts.util.map(param.data[j].data, function (item, dataIndex) {
+                    var dataObj = {
+                        position: param.dom.convertToPixel('grid', item)
+                    };
+                    graphicObj.push(dataObj);
+                })
+            }
+            param.dom.setOption({
+                graphic: graphicObj
+            });
         }
     }
     return echartCommon;

@@ -1,18 +1,7 @@
 define(['jquery', 'echarts'], function ($, echarts) {
     var jumpIntervalMap = new Object();
     var echartCommon = {
-        constConfig: {
-            axisLineColor: '#ddd',
-            labelColor: '#b4b4b4',
-            splitColor: '#a5afbe',
-            zoomColor: '#d3d8df',
-            fillColor: '#8b9ebb',
-            iconColor: '#8b9ebb',
-            iconHoverColor: '#5b99f9',
-            axisLineWidth: 1,
-            lineColor: '#ffff00'
-        },
-        lineColoObj:{
+        lineColoObj: {
             'VA': '#3acffe',
             'GDP': '#a2784c',
             'GFP': '#ff421d',
@@ -31,6 +20,264 @@ define(['jquery', 'echarts'], function ($, echarts) {
             'ICbak': '#18ccb9',
             'Deflator': '#2b8189',
             'CU': '#77fff1'
+        },
+        structColorObj: {
+            'IC': '#a5ff4d',
+            'OPI': '#dadada',
+            'EXP': '#ff9600',
+            'GFP': '#ff421d',
+            'IMP': '#e4977f',
+            'OUTPUT': '#fffc00'
+        },
+        dataZoomConfig: [{
+                show: false,
+                type: 'inside',
+                start: 0,
+                end: 100,
+                startValue: null,
+                zoomOnMouseWheel: false,
+            },
+            {
+                height: 3,
+                backgroundColor: '#B4B4B3',
+                borderColor: 'transparent',
+                fillerColor: '#00D8FF',
+                showDetail: false,
+                handleSize: 12,
+                handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+                handleStyle: {
+                    color: '#00D8FF',
+                    shadowBlur: 8,
+                    shadowColor: '#4795B4',
+                    shadowOffsetX: 2,
+                    shadowOffsetY: 2
+                },
+                bottom: '1.5%'
+            }
+        ],
+        timelineConfig: {
+            axisType: 'category',
+            data: [],
+            currentIndex: 0,
+            autoPlay: false,
+            playInterval: 2000,
+            controlPosition: 'right',
+            left: '8%',
+            width: '85%',
+            symbolSize: 8,
+            label: {
+                normal: {
+                    color: '#ffffff',
+                    fontSize: 14
+                }
+            },
+            checkpointStyle: {
+                symbolSize: 2,
+                color: "#00ffff",
+                borderColor: '#00ffff'
+            },
+            controlStyle: {
+                show: false,
+                normal: {
+                    color: '#ddd'
+                }
+            },
+            tooltip: {
+                textStyle: {
+                    color: '#00ffff',
+                    fontSize: 14
+                },
+                backgroundColor: 'rgba(50,50,50,0.3)',
+                position: 'top',
+                formatter: function (result) {
+                    return result.name;
+                },
+            },
+        },
+        xAxisConfig: {
+            type: 'time',
+            position: 'bottom',
+            axisLabel: {
+                margin: 10,
+                textStyle: {
+                    color: '#b4b4b4',
+                    fontSise: 10,
+                },
+                formatter: function (params) {
+                    var year = (new Date(params)).getFullYear();
+                    var month = (new Date(params)).getMonth() + 1;
+                    if (month < 10) {
+                        month = '0' + month;
+                    }
+                    var date = (new Date(params)).getDate();
+                    if (date < 10) {
+                        date = '0' + date;
+                    }
+                    return year + '-' + month + '-' + date;
+                },
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#9c9ca0',
+                    width: 1,
+                    type: 'solid'
+                }
+            },
+            axisTick: {
+                show: false,
+                alignWithLabel: true,
+                inside: true
+            },
+            splitLine: {
+                show: false,
+            },
+            splitArea: {
+                show: false,
+            }
+        },
+        yAxisConfig: {
+            type: 'value',
+            nameGap: 10,
+            scale: true, //脱离0值比例
+            splitNumber: 4,
+            boundaryGap: false,
+            axisLabel: {
+                margin: 12,
+                color: '#b4b4b4',
+                fontFamily: 'arial',
+                fontWeight: 'bolder',
+                fontSise: 10,
+                formatter: function (v) {
+                    if (1) {
+                        return v.toFixed(1);
+                    } else {
+                        return '';
+                    }
+                }
+            },
+            axisLine: {
+                show: false,
+                lineStyle: {
+                    color: '#ddd', //y轴
+                    width: 1,
+                    type: 'solid'
+                }
+            },
+            axisTick: {
+                onGap: false,
+                show: false,
+            },
+            splitArea: {
+                show: false
+            },
+            splitLine: {
+                show: true,
+                lineStyle: {
+                    color: '#62636d'
+                }
+            },
+            axisPointer: {
+                show: false,
+            }
+        },
+        gridConfig: {
+            containLabel: true,
+            top: '7%',
+            left: 'left',
+            width: '96%',
+            height: '88%'
+        },
+        mapToolTipConfig: {
+            trigger: 'item',
+            formatter: function (result) {
+                if (typeof (result.value) == 'object') {
+                    return result.name + '<br/>数据：' + result.value[2].toFixed(2);
+                } else if (!isNaN(result.value)) {
+                    return result.name + '<br />数据:' + result.value.toFixed(2);
+                } else {
+                    return result.name;
+                }
+            },
+        },
+        lineToolTipConfig: {
+            trigger: 'item',
+            axisPointer: {
+                show: true,
+                type: 'line',
+                label: {
+                    show: true,
+                    formatter: function (v) {
+                        var date = new Date(v.value);
+                        return date.getFullYear() + '-' + (parseInt(date.getMonth()) + 1) + '-' + date.getDate();
+                    }
+                },
+                lineStyle: {
+                    type: 'solid',
+                    width: 1
+                }
+            },
+            showDelay: 0, // 显示延迟，添加显示延迟可以避免频繁切换，单位ms
+            backgroundColor: 'rgba(0,0,0,0.3)',
+            formatter: function (params) {
+                var tips = '';
+                var date;
+                if (Array.isArray(params)) {
+                    date = new Date(params[0].data[0]);
+                    var tipsTime = '时间：' + date.getFullYear() + '-' +
+                        (date.getMonth() + 1) + '-' +
+                        date.getDate() + "<br/>";
+                    for (var i = 0; i < params.length; i++) {
+                        var name = params[i].seriesName;
+                        if (params[i].seriesName.slice(params[i].seriesName.length - 2, params[i].seriesName.length) == '预测' && params[i].dataIndex == 0) {
+                            name = name.slice(0, name.length - 2) + '历史';
+                        }
+                        if (i == 0) {
+                            tipsTime = tipsTime + name + '：' + parseFloat(params[i].value[1]).toFixed(2) + '<br>';
+                        } else {
+                            if (params[i + 1].seriesName == params[i].seriesName) {
+                                continue;
+                            } else {
+                                tipsTime = tipsTime + name + '：' + parseFloat(params[i].value[1]).toFixed(2) + '<br>';
+                            }
+                        }
+                    }
+                    return tipsTime;
+                } else {
+                    date = new Date(params.data[0]);
+                    var tipsTime = '时间：' + date.getFullYear() + '-' +
+                        (date.getMonth() + 1) + '-' +
+                        date.getDate() + "<br/>";
+                    var name = params.seriesName;
+                    if (params.seriesName.slice(params.seriesName.length - 2, params.seriesName.length) == '预测' && params.dataIndex == 0) {
+                        name = name.slice(0, name.length - 2) + '历史';
+                    }
+                    tips += tipsTime + (name || 'value') + '：' + parseFloat(params.data[1]).toFixed(2);
+                }
+                return tips;
+            }
+        },
+        stackToolTipConfig: {
+            show: true,
+            trigger: 'axis',
+            axisPointer: {
+                show: true,
+                type: 'cross',
+                lineStyle: {
+                    type: 'dashed',
+                    width: 1
+                }
+            },
+            showDelay: 0, // 显示延迟，添加显示延迟可以避免频繁切换，单位ms
+            backgroundColor: 'rgba(0,0,0,0.6)',
+            formatter: function (params, ticket, callback) {
+                var tips = params[0].name + '</br>';
+                debugger;
+                var paramslen = params.length;
+                for (var i = 0; i < paramslen; i++) {
+                    tips += params[i].seriesName + ':' + Math.abs(params[i].value.toFixed(2)) + '<br/>'
+                }
+                return tips;
+            }
         },
         // 获取最大值最小值
         getMaxAndMin: function (data) {
@@ -55,16 +302,21 @@ define(['jquery', 'echarts'], function ($, echarts) {
         },
         // yyyy-mm-dd转Date类型
         time2Datetime: function (array) {
-            var copyArray = new Array();
+            var copyArray = new Array(),
+                xAxisArray = new Array(),
+                yAxisArray = new Array();
             for (var i = 0; i < array.length; i++) {
-                if (array[i].flag == 1) {
-                    copyArray[i] = [new Date(array[i].date), array[i].value, true];
-                } else {
-                    copyArray[i] = [new Date(array[i].date), array[i].value];
-                }
+                copyArray[i] = [new Date(array[i].date), array[i].value];
+                xAxisArray[i] = array[i].date;
+                yAxisArray[i] = array[i].value;
             }
-            return copyArray;
+            return {
+                serieData: copyArray,
+                xAxisData: xAxisArray,
+                yAxisData: yAxisArray
+            };
         },
+        // 获取MarkLine的time值
         getTime: function () {
             var timeNow = new Date();
             var year = timeNow.getFullYear();
@@ -97,274 +349,114 @@ define(['jquery', 'echarts'], function ($, echarts) {
                 untilSecond: untilSecond
             }
         },
-        //定制option
-        getJumpOption: function (params) {
-            var resjson;
-            var option = {
-                tooltip: {
-                    trigger: 'item',
-                    axisPointer: {
-                        show: true,
-                        type: 'line',
-                        label: {
-                            show: true,
-                            formatter: function (v) {
-                                var date = new Date(v.value);
-                                return date.getFullYear() + '-' + (parseInt(date.getMonth()) + 1) + '-' + date.getDate();
-                            }
-                        },
-                        lineStyle: {
-                            type: 'solid',
-                            width: 1
-                        }
-                    },
-                    showDelay: 0, // 显示延迟，添加显示延迟可以避免频繁切换，单位ms
-                    backgroundColor: 'rgba(0,0,0,0.3)',
-                    formatter: function (params) {
-                        var tips = '';
-                        var date;
-                        if (Array.isArray(params)) {
-                            date = new Date(params[0].data[0]);
-                            var tipsTime = '时间：' + date.getFullYear() + '-' +
-                                (date.getMonth() + 1) + '-' +
-                                date.getDate() + "<br/>";
-                            for (var i = 0; i < params.length; i++) {
-                                var name = params[i].seriesName;
-                                if (params[i].seriesName.slice(params[i].seriesName.length - 2, params[i].seriesName.length) == '预测' && params[i].dataIndex == 0) {
-                                    name = name.slice(0, name.length - 2) + '历史';
-                                }
-                                if (i == 0) {
-                                    tipsTime = tipsTime + name + '：' + parseFloat(params[i].value[1]).toFixed(2) + '<br>';
-                                } else {
-                                    if (params[i + 1].seriesName == params[i].seriesName) {
-                                        continue;
-                                    } else {
-                                        tipsTime = tipsTime + name + '：' + parseFloat(params[i].value[1]).toFixed(2) + '<br>';
-                                    }
-                                }
-                            }
-                            return tipsTime;
-                        } else {
-                            date = new Date(params.data[0]);
-                            var tipsTime = '时间：' + date.getFullYear() + '-' +
-                                (date.getMonth() + 1) + '-' +
-                                date.getDate() + "<br/>";
-                            var name = params.seriesName;
-                            if (params.seriesName.slice(params.seriesName.length - 2, params.seriesName.length) == '预测' && params.dataIndex == 0) {
-                                name = name.slice(0, name.length - 2) + '历史';
-                            }
-                            tips += tipsTime + (name || 'value') + '：' + parseFloat(params.data[1]).toFixed(2);
-                        }
-                        return tips;
-                    }
-                },
+        // option
+        getOption: function (params) {
+            var resjson, xAxisData;
+            let option = {
+                tooltip: echartCommon.lineToolTipConfig,
                 title: {
-                    left: 'left',
                     text: params.title,
+                    left: 'left',
                     textStyle: {
                         color: '#fff'
                     }
                 },
-                grid: {
-                    containLabel: true,
-                    top: '7%',
-                    left: 'left',
-                    width: '96%',
-                    height: '88%'
-                },
-                dataZoom: [{
-                        show: false,
-                        type: 'inside',
-                    },
-                    {
-                        height: 3,
-                        backgroundColor: '#B4B4B3',
-                        borderColor: 'transparent',
-                        fillerColor: '#00D8FF',
-                        showDetail: false,
-                        handleSize: 12,
-                        handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
-                        handleStyle: {
-                            color: '#00D8FF',
-                            shadowBlur: 8,
-                            shadowColor: '#4795B4',
-                            shadowOffsetX: 2,
-                            shadowOffsetY: 2
-                        },
-                        bottom: '1.5%'
-                    }
-                ],
-                xAxis: {
-                    type: 'time',
-                    position: 'bottom',
-                    axisLabel: {
-                        margin: 10,
-                        textStyle: {
-                            color: echartCommon.constConfig.labelColor,
-                            fontSise: 10,
-                        },
-                        formatter: function (params) {
-                            var year = (new Date(params)).getFullYear();
-                            var month = (new Date(params)).getMonth() + 1;
-                            if (month < 10) {
-                                month = '0' + month;
-                            }
-                            var date = (new Date(params)).getDate();
-                            if (date < 10) {
-                                date = '0' + date;
-                            }
-                            return year + '-' + month + '-' + date;
-                        },
-                    },
-                    axisLine: {
-                        lineStyle: {
-                            color: '#9c9ca0',
-                            width: echartCommon.constConfig.axisLineWidth,
-                            type: 'solid'
-                        }
-                    },
-                    axisTick: {
-                        show: false,
-                        alignWithLabel: true,
-                        inside: true
-                    },
-                    splitLine: {
-                        show: false,
-                    },
-                    splitArea: {
-                        show: false,
-                    }
-                },
-                yAxis: [{
-                    type: 'value',
-                    nameGap: 10,
-                    scale: true, //脱离0值比例
-                    splitNumber: 4,
-                    boundaryGap: false,
-                    axisLabel: {
-                        margin: 12,
-                        color: echartCommon.constConfig.labelColor,
-                        fontFamily: 'arial',
-                        fontWeight: 'bolder',
-                        fontSise: 10,
-                        formatter: function (v) {
-                            if (1) {
-                                return v.toFixed(1);
-                            } else {
-                                return '';
-                            }
-                        }
-                    },
-                    axisLine: {
-                        show: false,
-                        lineStyle: {
-                            color: echartCommon.constConfig.axisLineColor, //y轴
-                            width: echartCommon.constConfig.axisLineWidth,
-                            type: 'solid'
-                        }
-                    },
-                    axisTick: {
-                        onGap: false,
-                        show: false,
-                    },
-                    splitArea: {
-                        show: false
-                    },
-                    splitLine: {
-                        show: true,
-                        lineStyle: {
-                            color: '#62636d'
-                        }
-                    },
-                    axisPointer: {
-                        show: false,
-                    }
-                }, {
-                    type: 'value',
-                    scale: true, //脱离0值比例
-                    splitNumber: 4,
-                    axisLabel: {
-                        margin: 12,
-                        color: echartCommon.constConfig.labelColor,
-                        fontFamily: 'arial',
-                        fontWeight: 'bolder',
-                        fontSise: 10,
-                        formatter: function (v) {
-                            if (1) {
-                                return v.toFixed(1);
-                            } else {
-                                return '';
-                            }
-                        }
-                    },
-                    axisLine: {
-                        show: false,
-                        lineStyle: {
-                            color: echartCommon.constConfig.axisLineColor, //y轴
-                            width: echartCommon.constConfig.axisLineWidth,
-                            type: 'solid'
-                        }
-                    },
-                    axisTick: {
-                        onGap: false,
-                        show: false,
-                    },
-                    splitArea: {
-                        show: false
-                    },
-                    splitLine: {
-                        show: false,
-                        lineStyle: {
-                            color: '#62636d'
-                        }
-                    },
-                    axisPointer: {
-                        show: false,
-                    }
-                }],
+                grid: echartCommon.gridConfig,
+                dataZoom: echartCommon.dataZoomConfig,
+                xAxis: echartCommon.xAxisConfig,
+                yAxis: [echartCommon.yAxisConfig, echartCommon.yAxisConfig],
                 series: function () {
                     var serie = [];
                     resjson = echartCommon.getOptionData({
-                        url: params.url
+                        url: params.url,
+                        chartType: params.chartType
                     });
-                    for (let i = 0; i < resjson.length; i++) {
-                        var item, serieData = echartCommon.time2Datetime(resjson[i].children),
-                        regstr = /[\u4e00-\u9fa5、]+/,
-                        dataName = resjson[i].itemName.split(regstr).join(""),
-                        color = echartCommon.lineColoObj[dataName];
-                        if(color == undefined){
-                            color = echartCommon.constConfig.lineColor;
-                        }
-                        item = {
-                            name: resjson[i].itemName,
-                            type: 'line',
-                            showAllSymbol: false,
-                            symbol: 'circle',
-                            symbolSize: 4,
-                            data: serieData,
-                            yAxisIndex: 0,
-                            smooth: true,
-                            itemStyle: {
-                                normal: {
-                                    color: color,
-                                    lineStyle: {
-                                        width: 2,
-                                        type: 'solid',
-                                        color: color
+                    if (params.chartType == 'stack') {
+                        for (let i = 0; i < resjson.length; i++) {
+                            var item, serieData = echartCommon.time2Datetime(resjson[i].children).yAxisData
+                            dataName = resjson[i].itemName,
+                                color = echartCommon.structColorObj[dataName];
+                            xAxisData = echartCommon.time2Datetime(resjson[i].children).xAxisData;
+                            if (color == undefined) {
+                                color = '#ffff00';
+                            }
+                            item = {
+                                name: resjson[i].itemName,
+                                type: 'bar',
+                                showAllSymbol: false,
+                                symbol: 'circle',
+                                symbolSize: 4,
+                                data: serieData,
+                                yAxisIndex: 0,
+                                smooth: true,
+                                itemStyle: {
+                                    normal: {
+                                        color: color,
+                                        lineStyle: {
+                                            width: 2,
+                                            type: 'solid',
+                                            color: color
+                                        }
                                     }
-                                }
-                            },
-                            markLine: {},
-                            markArea: {}
-                        };
-                        serie.push(item);
+                                },
+                                stack: '总量',
+                                markLine: {},
+                                markArea: {}
+                            };
+                            serie.push(item);
+                        }
+                    } else {
+                        for (let i = 0; i < resjson.length; i++) {
+                            var item, serieData = echartCommon.time2Datetime(resjson[i].children).serieData,
+                                regstr = /[\u4e00-\u9fa5、]+/,
+                                dataName = resjson[i].itemName.split(regstr).join(""),
+                                color = echartCommon.lineColoObj[dataName];
+                            if (color == undefined) {
+                                color = '#ffff00';
+                            }
+                            item = {
+                                name: resjson[i].itemName,
+                                type: 'line',
+                                showAllSymbol: false,
+                                symbol: 'circle',
+                                symbolSize: 4,
+                                data: serieData,
+                                yAxisIndex: 0,
+                                smooth: true,
+                                itemStyle: {
+                                    normal: {
+                                        color: color,
+                                        lineStyle: {
+                                            width: 2,
+                                            type: 'solid',
+                                            color: color
+                                        }
+                                    }
+                                },
+                                markLine: {},
+                                markArea: {}
+                            };
+                            serie.push(item);
+                        }
                     }
                     return serie;
                 }()
             };
+            if (params.chartType == 'stack') {
+                option.xAxis.type = 'category';
+                option.xAxis.data = xAxisData;
+                option.tooltip = echartCommon.stackToolTipConfig;
+                option.yAxis[0].axisLabel.formatter = function (v) {
+                    if (v > 0)
+                        return Math.round(v)
+                    else
+                        return -Math.round(v)
+                };
+            } else {
+                option.xAxis.type = 'time';
+            }
             return option;
         },
-
         //请求带闪烁的option数据
         getOptionData: function (param) {
             var resjson;
@@ -374,6 +466,15 @@ define(['jquery', 'echarts'], function ($, echarts) {
                 async: false, //同步
                 success: function (result) {
                     resjson = result;
+                    if (param.chartType == 'stack') {
+                        for (var i = 0; i < resjson.length; i++) {
+                            if (resjson[i]['itemName'] == 'IMP' || resjson[i]['itemName'] == 'OUTPUT') {
+                                for (var j = 0; j < resjson[i]['children'].length; j++) {
+                                    resjson[i]['children'][j]['value'] = -resjson[i]['children'][j]['value'];
+                                }
+                            }
+                        }
+                    }
                 },
                 error: function (err) {
                     console.log(err)
@@ -384,7 +485,7 @@ define(['jquery', 'echarts'], function ($, echarts) {
 
         //预测折线图闪烁
         jumpChart: function (param) {
-            var option = param.option,
+            let option = param.option,
                 id = param.dom.id,
                 opacity = 1,
                 flagOpcity = 2,
@@ -392,7 +493,7 @@ define(['jquery', 'echarts'], function ($, echarts) {
                 chartEnd = 100;
             param.dom.clear();
             // 获取闪烁数据的series
-            var jumpSeriesIndex = [],
+            let jumpSeriesIndex = [],
                 historyIndex;
             for (var i = 0; i < option.series.length; i++) {
                 if (option.series[i].name.substr(option.series[i].name.length - 2, 2) == '预测') {
@@ -485,32 +586,11 @@ define(['jquery', 'echarts'], function ($, echarts) {
                     }
                 }
                 if (param.isDataZoom) {
-                    option.dataZoom = [{
-                            show: false,
-                            type: 'inside',
-                            start: chartStart,
-                            end: chartEnd,
-                            startValue: chartStartV,
-                            zoomOnMouseWheel: false,
-                        },
-                        {
-                            height: 3,
-                            backgroundColor: '#B4B4B3',
-                            borderColor: 'transparent',
-                            fillerColor: '#00D8FF',
-                            showDetail: false,
-                            handleSize: 8,
-                            handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
-                            handleStyle: {
-                                color: '#00D8FF',
-                                shadowBlur: 8,
-                                shadowColor: '#4795B4',
-                                shadowOffsetX: 2,
-                                shadowOffsetY: 2
-                            },
-                            bottom: '1.5%'
-                        }
-                    ];
+                    echartCommon.dataZoomConfig[0].start = chartStart;
+                    echartCommon.dataZoomConfig[0].end = chartEnd;
+                    echartCommon.dataZoomConfig[0].startValue = chartStartV;
+                    option.dataZoom = echartCommon.dataZoomConfig;
+
                 }
                 param.dom.setOption(option);
             }, param.time);
@@ -529,56 +609,8 @@ define(['jquery', 'echarts'], function ($, echarts) {
                         show: true,
                         calculable: true
                     },
-                    timeline: {
-                        axisType: 'category',
-                        data: [],
-                        currentIndex: 0,
-                        autoPlay: false,
-                        playInterval: 2000,
-                        controlPosition: 'right',
-                        left: '8%',
-                        width: '85%',
-                        symbolSize: 8,
-                        label: {
-                            normal: {
-                                color: '#ffffff',
-                                fontSize: 14
-                            }
-                        },
-                        checkpointStyle: {
-                            symbolSize: 2,
-                            color: "#00ffff",
-                            borderColor: '#00ffff'
-                        },
-                        controlStyle: {
-                            show: false,
-                            normal: {
-                                color: '#ddd'
-                            }
-                        },
-                        tooltip: {
-                            textStyle: {
-                                color: '#00ffff',
-                                fontSize: 14
-                            },
-                            backgroundColor: 'rgba(50,50,50,0.3)',
-                            position: 'top',
-                            formatter: function (result) {
-                                return result.name;
-                            },
-                        },
-                    },
-                    tooltip: {
-                        trigger: 'item',
-                        formatter: function loadData(result) {
-                            if (isNaN(result.value)) {
-                                return result.name;
-                            } else {
-                                return paramObj.mapTime + '<br />' + result.name + '<br />数据:' + result.value.toFixed(2);
-                            }
-
-                        }
-                    },
+                    timeline: echartCommon.timelineConfig,
+                    tooltip: echartCommon.mapToolTipConfig,
                     dataRange: {
                         splitNumber: 0,
                         text: ['高', '低'],
@@ -598,12 +630,9 @@ define(['jquery', 'echarts'], function ($, echarts) {
                     },
                     title: {
                         text: param.title,
-                        left: 'center',
-                        y: '5%',
+                        left: 'left',
                         textStyle: {
-                            color: '#fff',
-                            fontSize: 16,
-                            fontWeight: 'lighter'
+                            color: '#fff'
                         }
                     },
                     //地图
@@ -643,67 +672,18 @@ define(['jquery', 'echarts'], function ($, echarts) {
         },
 
         // 点状地图配置
-        spotMapOption(param) {
+        spotMapOption: function (param) {
             var option = {
                 baseOption: {
-                    tooltip: {
-                        trigger: 'item',
-                        formatter: function (result) {
-                            if (typeof (result.value) == 'object') {
-                                return paramObj.mapTime + '<br />' + result.name + '<br/>数据：' + result.value[2].toFixed(2);
-                            } else {
-                                return result.name;
-                            }
-                        },
-                    },
+                    tooltip: echartCommon.mapToolTipConfig,
                     title: {
                         text: param.title,
-                        left: 'center',
-                        y: '5%',
+                        left: 'left',
                         textStyle: {
-                            color: '#fff',
-                            fontSize: 16,
-                            fontWeight: 'lighter'
+                            color: '#fff'
                         }
                     },
-                    timeline: {
-                        axisType: 'category',
-                        currentIndex: 0,
-                        autoPlay: false,
-                        playInterval: 2000,
-                        controlPosition: 'right',
-                        left: '8%',
-                        width: '85%',
-                        symbolSize: 8,
-                        label: {
-                            normal: {
-                                color: '#ffffff',
-                                fontSize: 14
-                            }
-                        },
-                        checkpointStyle: {
-                            symbolSize: 2,
-                            color: "#00ffff",
-                            borderColor: '#00ffff'
-                        },
-                        controlStyle: {
-                            show: false,
-                            normal: {
-                                color: '#ddd'
-                            }
-                        },
-                        tooltip: {
-                            textStyle: {
-                                color: '#00ffff',
-                                fontSize: 14
-                            },
-                            backgroundColor: 'rgba(50,50,50,0.3)',
-                            position: 'top',
-                            formatter: function (result) { //回调函数，参数params具体格式参加官方API
-                                return result.name;
-                            }
-                        }
-                    },
+                    timeline: echartCommon.timelineConfig,
                     geo: {
                         id: 'map',
                         type: 'map',
@@ -762,10 +742,11 @@ define(['jquery', 'echarts'], function ($, echarts) {
         },
 
         // 获取地图数据
-        getMapData(param) {
+        getMapData: function (param) {
             $.ajax({
                 url: param.url,
                 type: 'get',
+                async: false, //同步
                 success: function (result) {
                     if (param.type == 'colorMap') {
                         if (result.datas.length) {
@@ -817,7 +798,7 @@ define(['jquery', 'echarts'], function ($, echarts) {
         },
 
         // 显示地图
-        showMap(param) {
+        showMap: function (param) {
             $.get(param.mapUrl, function (mapJson) {
                 echarts.registerMap('china', mapJson);
                 echartCommon.getMapData({
@@ -829,11 +810,17 @@ define(['jquery', 'echarts'], function ($, echarts) {
             })
         },
 
-        drugOption(param) {
+        // 堆积图Option
+        option: function (param) {
+
+        },
+
+        // 折线图拖拽
+        drugOption: function (param) {
             var option = {
                 title: {
                     text: param.title,
-                    left: 'center',
+                    left: 'left',
                     textStyle: {
                         color: '#fff'
                     }
@@ -850,127 +837,10 @@ define(['jquery', 'echarts'], function ($, echarts) {
                         }
                     }
                 },
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
-                    containLabel: true
-                },
-                xAxis: {
-                    type: 'time',
-                    position: 'bottom',
-                    axisLine: {
-                        lineStyle: {
-                            color: '#9c9ca0',
-                            width: echartCommon.constConfig.axisLineWidth,
-                            type: 'solid'
-                        }
-                    },
-                    axisLabel: {
-                        margin: 10,
-                        textStyle: {
-                            color: echartCommon.constConfig.labelColor,
-                            fontSise: 10,
-                        },
-                        formatter: function (params) {
-                            var year = (new Date(params)).getFullYear();
-                            var month = (new Date(params)).getMonth() + 1;
-                            if (month < 10) {
-                                month = '0' + month;
-                            }
-                            var date = (new Date(params)).getDate();
-                            if (date < 10) {
-                                date = '0' + date;
-                            }
-                            return year + '-' + month + '-' + date;
-                        },
-                        axisLine: {
-                            lineStyle: {
-                                color: '#9c9ca0',
-                                width: echartCommon.constConfig.axisLineWidth,
-                                type: 'solid'
-                            }
-                        },
-                        axisTick: {
-                            show: false,
-                            alignWithLabel: true,
-                            inside: true
-                        },
-                        splitLine: {
-                            show: false,
-                        },
-                        splitArea: {
-                            show: false,
-                        }
-                    },
-                },
-                yAxis: {
-                    type: 'value',
-                    nameGap: 10,
-                    scale: true, //脱离0值比例
-                    splitNumber: 4,
-                    boundaryGap: false,
-                    axisLabel: {
-                        margin: 12,
-                        color: echartCommon.constConfig.labelColor,
-                        fontFamily: 'arial',
-                        fontWeight: 'bolder',
-                        fontSise: 10,
-                        formatter: function (v) {
-                            if (1) {
-                                return v.toFixed(1);
-                            } else {
-                                return '';
-                            }
-                        }
-                    },
-                    axisLine: {
-                        show: false,
-                        lineStyle: {
-                            color: echartCommon.constConfig.axisLineColor, //y轴
-                            width: echartCommon.constConfig.axisLineWidth,
-                            type: 'solid'
-                        }
-                    },
-                    axisTick: {
-                        onGap: false,
-                        show: false,
-                    },
-                    splitArea: {
-                        show: false
-                    },
-                    splitLine: {
-                        show: true,
-                        lineStyle: {
-                            color: '#62636d'
-                        }
-                    },
-                    axisPointer: {
-                        show: false,
-                    }
-                },
-                dataZoom: [{
-                        show: false,
-                        type: 'inside',
-                    },
-                    {
-                        height: 3,
-                        backgroundColor: '#B4B4B3',
-                        borderColor: 'transparent',
-                        fillerColor: '#00D8FF',
-                        showDetail: false,
-                        handleSize: 12,
-                        handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
-                        handleStyle: {
-                            color: '#00D8FF',
-                            shadowBlur: 8,
-                            shadowColor: '#4795B4',
-                            shadowOffsetX: 2,
-                            shadowOffsetY: 2
-                        },
-                        bottom: '1.5%'
-                    }
-                ],
+                grid: echartCommon.gridConfig,
+                xAxis: echartCommon.xAxisConfig,
+                yAxis: echartCommon.yAxisConfig,
+                dataZoom: echartCommon.dataZoomConfig,
                 graphic: [],
                 series: function () {
                     var seriesData = [];
@@ -991,7 +861,7 @@ define(['jquery', 'echarts'], function ($, echarts) {
             param.dom.setOption(option, true);
         },
         // 拖拽函数
-        drugFun(param) {
+        drugFun: function (param) {
             var graphicObj = [];
             setTimeout(function () {
                 for (var i = 0; i < param.data.length; i++) {
@@ -1041,20 +911,20 @@ define(['jquery', 'echarts'], function ($, echarts) {
             }, 100);
         },
         // tooltip函数
-        showTooltip(index, dataIndex, dom) {
+        showTooltip: function (index, dataIndex, dom) {
             dom.dispatchAction({
                 type: 'showTip',
                 seriesIndex: index,
                 dataIndex: dataIndex
             });
         },
-        hideTooltip(dataIndex, dom) {
+        hideTooltip: function (dataIndex, dom) {
             dom.dispatchAction({
                 type: 'hideTip'
             });
         },
         // point拖拽过程的函数
-        onPointDragging(line, dataIndex, dom) {
+        onPointDragging: function (line, dataIndex, dom) {
             var dateData = line.data[dataIndex][0];
             this.position[0] = dom.convertToPixel('grid', line.data[dataIndex])[0];
             line.data[dataIndex] = dom.convertFromPixel('grid', this.position);
@@ -1066,7 +936,7 @@ define(['jquery', 'echarts'], function ($, echarts) {
                 }]
             });
         },
-        updatePosition(param) {
+        updatePosition: function (param) {
             var graphicObj = [];
             for (var j = 0; j < param.data.length; j++) {
                 graphic: echarts.util.map(param.data[j].data, function (item, dataIndex) {

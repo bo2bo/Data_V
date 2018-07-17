@@ -1,15 +1,24 @@
 define(['jquery', 'echarts', 'echartCommon'], function ($, echarts, echartCommon) {
     $(function () {
+        stackChart = echarts.init(document.getElementById('stackChart'));
         jumpLineChart = echarts.init(document.getElementById('jumpLineChart'));
+        doubleLineChart = echarts.init(document.getElementById('doubleLineChart'));
         barLineChart = echarts.init(document.getElementById('barLineChart'));
-        drugLineChart = echarts.init(document.getElementById('drugLineChart'));
         colorMapChart = echarts.init(document.getElementById('colorMapChart'));
         pointMapChart = echarts.init(document.getElementById('pointMapChart'));
-        doubleLineChart = echarts.init(document.getElementById('doubleLineChart'));
-        // 折线柱状图
-        var jumpLineChartOption = echartCommon.getJumpOption({
+        drugLineChart = echarts.init(document.getElementById('drugLineChart'));
+        // 堆积图
+        var stackChartOption = echartCommon.getOption({
+            url: "./../assets/js/json/stackData.json",
+            title: '堆积图',
+            chartType: 'stack'
+        });
+        stackChart.setOption(stackChartOption);
+        // 闪烁折线图
+        var jumpLineChartOption = echartCommon.getOption({
             url: "./../assets/js/json/jumpLineData.json",
-            title: '闪烁折线图'
+            title: '闪烁折线图',
+            chartType: 'line'
         });
         echartCommon.jumpChart({
             dom: jumpLineChart,
@@ -18,9 +27,10 @@ define(['jquery', 'echarts', 'echartCommon'], function ($, echarts, echartCommon
             time: 100
         });
         // 多线闪动
-        var doubleLineChartOption = echartCommon.getJumpOption({
-            url:"./../assets/js/json/doubleLineData.json",
-            title:'多线闪动',
+        var doubleLineChartOption = echartCommon.getOption({
+            url: "./../assets/js/json/doubleLineData.json",
+            title: '多线闪动',
+            chartType: 'line'
         })
         echartCommon.jumpChart({
             dom: doubleLineChart,
@@ -29,9 +39,10 @@ define(['jquery', 'echarts', 'echartCommon'], function ($, echarts, echartCommon
             time: 100
         });
         // 折线柱状图
-        var barLineChartOption = echartCommon.getJumpOption({
+        var barLineChartOption = echartCommon.getOption({
             url: "./../assets/js/json/lineBarData.json",
-            title: '闪烁折线柱状图'
+            title: '闪烁折线柱状图',
+            chartType: 'line'
         });
         barLineChartOption.series[0].type = 'bar';
         barLineChartOption.series[1].type = 'bar';

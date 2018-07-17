@@ -2,9 +2,10 @@ define(['jquery', 'echarts', 'echartCommon'], function ($, echarts, echartCommon
     $(function () {
         jumpLineChart = echarts.init(document.getElementById('jumpLineChart'));
         barLineChart = echarts.init(document.getElementById('barLineChart'));
-        // drugLineChart = echarts.init(document.getElementById('drugLineChart'));
+        drugLineChart = echarts.init(document.getElementById('drugLineChart'));
         colorMapChart = echarts.init(document.getElementById('colorMapChart'));
         pointMapChart = echarts.init(document.getElementById('pointMapChart'));
+        doubleLineChart = echarts.init(document.getElementById('doubleLineChart'));
         // 折线柱状图
         var jumpLineChartOption = echartCommon.getJumpOption({
             url: "./../assets/js/json/jumpLineData.json",
@@ -13,6 +14,17 @@ define(['jquery', 'echarts', 'echartCommon'], function ($, echarts, echartCommon
         echartCommon.jumpChart({
             dom: jumpLineChart,
             option: jumpLineChartOption,
+            isDataZoom: true,
+            time: 100
+        });
+        // 多线闪动
+        var doubleLineChartOption = echartCommon.getJumpOption({
+            url:"./../assets/js/json/doubleLineData.json",
+            title:'多线闪动',
+        })
+        echartCommon.jumpChart({
+            dom: doubleLineChart,
+            option: doubleLineChartOption,
             isDataZoom: true,
             time: 100
         });
@@ -108,7 +120,6 @@ define(['jquery', 'echarts', 'echartCommon'], function ($, echarts, echartCommon
             dom: pointMapChart
         });
         // 线图拖拽功能
-        var drugLineChart = echarts.init(document.getElementById("drugLineChart"));
         var drugData = echartCommon.getOptionData({
             url: './../assets/js/json/drugLineData.json'
         });

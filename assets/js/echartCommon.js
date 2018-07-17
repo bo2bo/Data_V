@@ -12,6 +12,26 @@ define(['jquery', 'echarts'], function ($, echarts) {
             axisLineWidth: 1,
             lineColor: '#ffff00'
         },
+        lineColoObj:{
+            'VA': '#3acffe',
+            'GDP': '#a2784c',
+            'GFP': '#ff421d',
+            'OPI': '#dadada',
+            'IC': '#a5ff4d',
+            'FGI': '#18ccb9',
+            'DF': '#2b8189',
+            'PPI': '#b64dff',
+            'CPI': '#888888',
+            'EXP': '#ff9600',
+            'IMP': '#e4977f',
+            'PROF': '#f372a0',
+            'RCU': '#77fff1',
+            'AS': '#fffc00',
+            'AD': '#2ffe91',
+            'ICbak': '#18ccb9',
+            'Deflator': '#2b8189',
+            'CU': '#77fff1'
+        },
         // 获取最大值最小值
         getMaxAndMin: function (data) {
             var valueData = [];
@@ -45,12 +65,44 @@ define(['jquery', 'echarts'], function ($, echarts) {
             }
             return copyArray;
         },
+        getTime: function () {
+            var timeNow = new Date();
+            var year = timeNow.getFullYear();
+            var month = timeNow.getMonth() + 1;
+            if (month < 10) {
+                month = '0' + month;
+            }
+            var date = timeNow.getDate();
+            if (date < 10) {
+                date = '0' + date;
+            }
+            var hours = timeNow.getHours();
+            if (hours < 10) {
+                hours = '0' + hours;
+            }
+            var minutes = timeNow.getMinutes();
+            if (minutes < 10) {
+                minutes = '0' + minutes;
+            }
+            var second = timeNow.getSeconds();
+            if (second < 10) {
+                second = '0' + second;
+            }
+            var untilDay = year + '-' + month + '-' + date;
+            var untilSecond = hours + ':' + minutes + ':' + second;
+            return {
+                year: year,
+                month: month,
+                untilDay: untilDay,
+                untilSecond: untilSecond
+            }
+        },
         //定制option
         getJumpOption: function (params) {
             var resjson;
             var option = {
                 tooltip: {
-                    trigger: 'axis',
+                    trigger: 'item',
                     axisPointer: {
                         show: true,
                         type: 'line',
@@ -66,29 +118,48 @@ define(['jquery', 'echarts'], function ($, echarts) {
                             width: 1
                         }
                     },
-                    showDelay: 0,
+                    showDelay: 0, // 显示延迟，添加显示延迟可以避免频繁切换，单位ms
+                    backgroundColor: 'rgba(0,0,0,0.3)',
                     formatter: function (params) {
                         var tips = '';
                         var date;
                         if (Array.isArray(params)) {
                             date = new Date(params[0].data[0]);
-                            var tipsTime = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + "<br/>";
-                            if (params.length === 1 || params[0].seriesName.substr(0, params[0].seriesName.length - 2) == params[1].seriesName.substr(0, params[1].seriesName.length - 2)) {
-                                var value = isNaN(params[0].value[1]) ? '无' : parseFloat(params[0].value[1]).toFixed(2);
-                                return tipsTime + params[0].seriesName + ':' + value;
-                            } else if (params.length === 2 && (params[0].seriesName.substr(0, params[0].seriesName.length - 2) != params[1].seriesName.substr(0, params[1].seriesName.length - 2))) {
-                                return tipsTime + params[0].seriesName + ':' + parseFloat(params[0].value[1]).toFixed(2) + '<br>' + params[1].seriesName + ':' + parseFloat(params[1].value[1]).toFixed(2);
+                            var tipsTime = '时间：' + date.getFullYear() + '-' +
+                                (date.getMonth() + 1) + '-' +
+                                date.getDate() + "<br/>";
+                            for (var i = 0; i < params.length; i++) {
+                                var name = params[i].seriesName;
+                                if (params[i].seriesName.slice(params[i].seriesName.length - 2, params[i].seriesName.length) == '预测' && params[i].dataIndex == 0) {
+                                    name = name.slice(0, name.length - 2) + '历史';
+                                }
+                                if (i == 0) {
+                                    tipsTime = tipsTime + name + '：' + parseFloat(params[i].value[1]).toFixed(2) + '<br>';
+                                } else {
+                                    if (params[i + 1].seriesName == params[i].seriesName) {
+                                        continue;
+                                    } else {
+                                        tipsTime = tipsTime + name + '：' + parseFloat(params[i].value[1]).toFixed(2) + '<br>';
+                                    }
+                                }
                             }
+                            return tipsTime;
                         } else {
                             date = new Date(params.data[0]);
-                            var tipsTime = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + "<br/>";
-                            tips += tipsTime + (params.seriesName || 'value') + ':' + parseFloat(params.data[1]).toFixed(2);
+                            var tipsTime = '时间：' + date.getFullYear() + '-' +
+                                (date.getMonth() + 1) + '-' +
+                                date.getDate() + "<br/>";
+                            var name = params.seriesName;
+                            if (params.seriesName.slice(params.seriesName.length - 2, params.seriesName.length) == '预测' && params.dataIndex == 0) {
+                                name = name.slice(0, name.length - 2) + '历史';
+                            }
+                            tips += tipsTime + (name || 'value') + '：' + parseFloat(params.data[1]).toFixed(2);
                         }
                         return tips;
                     }
                 },
                 title: {
-                    left: 'center',
+                    left: 'left',
                     text: params.title,
                     textStyle: {
                         color: '#fff'
@@ -257,7 +328,13 @@ define(['jquery', 'echarts'], function ($, echarts) {
                         url: params.url
                     });
                     for (let i = 0; i < resjson.length; i++) {
-                        var item, serieData = echartCommon.time2Datetime(resjson[i].children);
+                        var item, serieData = echartCommon.time2Datetime(resjson[i].children),
+                        regstr = /[\u4e00-\u9fa5、]+/,
+                        dataName = resjson[i].itemName.split(regstr).join(""),
+                        color = echartCommon.lineColoObj[dataName];
+                        if(color == undefined){
+                            color = echartCommon.constConfig.lineColor;
+                        }
                         item = {
                             name: resjson[i].itemName,
                             type: 'line',
@@ -269,13 +346,16 @@ define(['jquery', 'echarts'], function ($, echarts) {
                             smooth: true,
                             itemStyle: {
                                 normal: {
-                                    color: echartCommon.constConfig.lineColor,
+                                    color: color,
                                     lineStyle: {
                                         width: 2,
-                                        type: 'solid'
+                                        type: 'solid',
+                                        color: color
                                     }
                                 }
-                            }
+                            },
+                            markLine: {},
+                            markArea: {}
                         };
                         serie.push(item);
                     }
@@ -360,6 +440,49 @@ define(['jquery', 'echarts'], function ($, echarts) {
                             opacity: opacity / 10,
                         }
                     };
+                }
+                for (var i = 0; i < jumpSeriesIndex.length; i++) {
+                    if (option.series[jumpSeriesIndex[i]].data.length == 1) {
+                        continue;
+                    } else {
+                        option.series[jumpSeriesIndex[i]].markLine = {
+                            symbol: ['none', 'none'],
+                            silent: true,
+                            label: {
+                                normal: {
+                                    show: true,
+                                    formatter: echartCommon.getTime().untilDay + ' ' + echartCommon.getTime().untilSecond
+                                }
+                            },
+                            lineStyle: {
+                                normal: {
+                                    type: 'dotted',
+                                    color: "#eeeeef",
+                                    width: 2
+                                }
+                            },
+                            data: [{
+                                xAxis: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
+                            }]
+                        };
+                        option.series[jumpSeriesIndex[i]].markArea = {
+                            silent: true,
+                            itemStyle: {
+                                normal: {
+                                    color: 'rgba(255,255,255,0.6)',
+                                    opacity: 0.1
+                                }
+                            },
+                            data: [
+                                [{
+                                    xAxis: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+                                }, {
+                                    xAxis: 'max'
+                                }]
+                            ]
+                        };
+                        break;
+                    }
                 }
                 if (param.isDataZoom) {
                     option.dataZoom = [{

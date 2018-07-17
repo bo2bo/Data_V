@@ -6,7 +6,8 @@
 #barLineChart,
 #drugLineChart,
 #colorMapChart,
-#pointMapChart{
+#pointMapChart,
+#doubleLineChart{
     width: 1200px;
     height: 600px;
 }

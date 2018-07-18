@@ -2,7 +2,18 @@
     width: 1200px;
     margin: 0 auto;
 }
-#stackChart,
+#stackChart{
+    width: 800px;
+    height: 600px;
+    float: right;
+}
+#needChart,
+#giveChart{
+    width: 400px;
+    height: 300px;
+    float: left;
+}
+
 #jumpLineChart,
 #barLineChart,
 #colorMapChart,
@@ -11,9 +22,6 @@
     width: 1200px;
     height: 600px;
 }
-#needChart,
-#giveChart{
-    width: 600px;
-    height: 300px;
-    float: left;
+.clear{
+    clear: both;
 }

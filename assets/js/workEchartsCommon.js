@@ -543,7 +543,7 @@ define(['jquery', 'echarts'], function ($, echarts) {
         },
         // 获取堆积图Option
         getStackOption: function (params) {
-            var resjson, xAxisData;
+            var resjson, xAxisData,legendData=[];
             let option = {
                 tooltip: workCommon.lineToolTipConfig,
                 title: {
@@ -551,6 +551,13 @@ define(['jquery', 'echarts'], function ($, echarts) {
                     left: 'left',
                     textStyle: {
                         color: '#fff'
+                    },
+                    show:false
+                },
+                legend: {
+                    data: [],
+                    textStyle:{
+                        color:"#fff"
                     }
                 },
                 grid: workCommon.gridConfig,
@@ -567,6 +574,7 @@ define(['jquery', 'echarts'], function ($, echarts) {
                         var item, serieData = workCommon.time2Datetime(resjson[i].children).yAxisData
                         dataName = resjson[i].itemName,
                             color = workCommon.structColorObj[dataName];
+                            legendData.push(dataName);
                         xAxisData = workCommon.time2Datetime(resjson[i].children).xAxisData;
                         if (color == undefined) {
                             color = '#ffff00';
@@ -601,6 +609,7 @@ define(['jquery', 'echarts'], function ($, echarts) {
             };
             option.xAxis.type = 'category';
             option.xAxis.data = xAxisData;
+            option.legend.data = legendData;
             option.tooltip = workCommon.stackToolTipConfig;
             option.yAxis[0].axisLabel.formatter = function (v) {
                 if (v > 0)

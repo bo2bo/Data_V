@@ -661,7 +661,7 @@ define(['jquery', 'echarts'], function ($, echarts) {
                     label: {
                         normal: {
                             color: '#fff',
-                            formatter: "{b}\n{d}%",
+                            formatter: '{b}:\n{c}\n{d}%',
                             textStyle: {
                                 fontWeight: 'normal',
                                 fontSize: 12
@@ -691,7 +691,7 @@ define(['jquery', 'echarts'], function ($, echarts) {
             for (var i = 0; i < series.length; i++) {
                 if (series[i].name == 'OUTPUT' || series[i].name == 'IMP' || (series[i].name == 'IC' && series[i].data[param.index] < 0)) {
                     var valueData = {
-                            value: series[i].data[param.index],
+                            value: -series[i].data[param.index].toFixed(2),
                             name: series[i].name
                         },
                         colorData = series[i].itemStyle.color;
@@ -699,7 +699,7 @@ define(['jquery', 'echarts'], function ($, echarts) {
                     needPieColors.push(colorData);
                 } else {
                     var valueData = {
-                            value: series[i].data[param.index],
+                            value: series[i].data[param.index].toFixed(2),
                             name: series[i].name
                         },
                         colorData = series[i].itemStyle.color;

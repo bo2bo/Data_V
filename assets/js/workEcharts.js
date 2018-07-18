@@ -1,29 +1,28 @@
-define(['jquery', 'echarts', 'echartCommon'], function ($, echarts, echartCommon) {
+define(['jquery', 'echarts', 'workCommon'], function ($, echarts, workCommon) {
     $(function () {
         stackChart = echarts.init(document.getElementById('stackChart'));
         jumpLineChart = echarts.init(document.getElementById('jumpLineChart'));
         doubleLineChart = echarts.init(document.getElementById('doubleLineChart'));
         barLineChart = echarts.init(document.getElementById('barLineChart'));
         colorMapChart = echarts.init(document.getElementById('colorMapChart'));
-        pointMapChart = echarts.init(document.getElementById('pointMapChart'));
-        drugLineChart = echarts.init(document.getElementById('drugLineChart'));        
+        pointMapChart = echarts.init(document.getElementById('pointMapChart'));      
         needChart = echarts.init(document.getElementById('needChart'));
         giveChart = echarts.init(document.getElementById('giveChart'));
         // 堆积图
-        var stackChartOption = echartCommon.getStackOption({
+        var stackChartOption = workCommon.getStackOption({
             url: "./../assets/js/json/stackData.json",
             title: '堆积图',
             chartType: 'struct'
         });
         stackChart.setOption(stackChartOption);
-        echartCommon.getPieData({
+        workCommon.getPieData({
             index: stackChart.getOption().series.length-1,
             needDom: needChart,
             giveDom: giveChart,
             chart: stackChart
         });
         stackChart.on('click', function (params) {
-            echartCommon.getPieData({
+            workCommon.getPieData({
                 index: params.dataIndex,
                 needDom: needChart,
                 giveDom: giveChart,
@@ -31,11 +30,11 @@ define(['jquery', 'echarts', 'echartCommon'], function ($, echarts, echartCommon
             });
         })
         // 闪烁折线图
-        var jumpLineChartOption = echartCommon.getLineOption({
+        var jumpLineChartOption = workCommon.getLineOption({
             url: "./../assets/js/json/jumpLineData.json",
             title: '闪烁折线图'
         });
-        echartCommon.jumpChart({
+        workCommon.jumpChart({
             dom: jumpLineChart,
             option: jumpLineChartOption,
             dataZoom: true,
@@ -43,11 +42,11 @@ define(['jquery', 'echarts', 'echartCommon'], function ($, echarts, echartCommon
             time: 100
         });
         // 多线闪动
-        var doubleLineChartOption = echartCommon.getLineOption({
+        var doubleLineChartOption = workCommon.getLineOption({
             url: "./../assets/js/json/doubleLineData.json",
             title: '多线闪动'
         })
-        echartCommon.jumpChart({
+        workCommon.jumpChart({
             dom: doubleLineChart,
             option: doubleLineChartOption,
             dataZoom: true,
@@ -55,7 +54,7 @@ define(['jquery', 'echarts', 'echartCommon'], function ($, echarts, echartCommon
             time: 100
         });
         // 折线柱状图
-        var barLineChartOption = echartCommon.getLineOption({
+        var barLineChartOption = workCommon.getLineOption({
             url: "./../assets/js/json/lineBarData.json",
             title: '闪烁折线柱状图'
         });
@@ -115,7 +114,7 @@ define(['jquery', 'echarts', 'echartCommon'], function ($, echarts, echartCommon
                 barLineChartOption.series[1].barMaxWidth = 'auto';
             }
         });
-        echartCommon.jumpChart({
+        workCommon.jumpChart({
             dom: barLineChart,
             option: barLineChartOption,
             dataZoom: true,
@@ -124,10 +123,10 @@ define(['jquery', 'echarts', 'echartCommon'], function ($, echarts, echartCommon
         });
 
         // 色温图
-        var colorMapOption = echartCommon.colorMapOption({
+        var colorMapOption = workCommon.colorMapOption({
             title: '色温图'
         });
-        echartCommon.showMap({
+        workCommon.showMap({
             mapUrl: './../assets/js/json/china.json',
             dataUrl: './../assets/js/json/colorMapData.json',
             option: colorMapOption,
@@ -136,46 +135,21 @@ define(['jquery', 'echarts', 'echartCommon'], function ($, echarts, echartCommon
         });
 
         // 地图标注
-        var pointMapOption = echartCommon.spotMapOption({
+        var pointMapOption = workCommon.spotMapOption({
             title: '点状图'
         });
-        echartCommon.showMap({
+        workCommon.showMap({
             mapUrl: './../assets/js/json/china.json',
             dataUrl: './../assets/js/json/pointMapData.json',
             option: pointMapOption,
             type: 'pointMap',
             dom: pointMapChart
         });
-        // 线图拖拽功能
-        var drugData = echartCommon.getLineOptionData({
-            url: './../assets/js/json/drugLineData.json'
-        });
-        echartCommon.drugOption({
-            dom: drugLineChart,
-            title: '折线图拖拽',
-            data: drugData
-        });
-        echartCommon.drugFun({
-            data: drugData,
-            dom: drugLineChart
-        })
-
-        drugLineChart.on('dataZoom', function () {
-            echartCommon.updatePosition({
-                data: drugData,
-                dom: drugLineChart
-            });
-        });
 
         // 图表自适应
         window.addEventListener("resize", function () {
             jumpLineChart.resize();
             barLineChart.resize();
-            drugLineChart.resize();
-            echartCommon.updatePosition({
-                data: drugData,
-                dom: drugLineChart
-            });
             colorMapChart.resize();
             pointMapChart.resize();
         });

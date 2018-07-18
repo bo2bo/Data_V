@@ -1,6 +1,6 @@
 define(['jquery', 'echarts'], function ($, echarts) {
     var jumpIntervalMap = new Object();
-    var echartCommon = {
+    var workCommon = {
         lineColoObj: {
             'VA': '#3acffe',
             'GDP': '#a2784c',
@@ -278,7 +278,7 @@ define(['jquery', 'echarts'], function ($, echarts) {
                 return tips;
             }
         },
-        markAreaConfig:{
+        markAreaConfig: {
             silent: true,
             itemStyle: {
                 normal: {
@@ -294,14 +294,14 @@ define(['jquery', 'echarts'], function ($, echarts) {
                 }]
             ]
         },
-        markLineConfig:{
+        markLineConfig: {
             symbol: ['none', 'none'],
             silent: true,
             label: {
                 normal: {
                     show: true,
-                    formatter: function(){
-                        return echartCommon.getTime().untilDay + ' ' + echartCommon.getTime().untilSecond
+                    formatter: function () {
+                        return workCommon.getTime().untilDay + ' ' + workCommon.getTime().untilSecond
                     }
                 }
             },
@@ -390,7 +390,7 @@ define(['jquery', 'echarts'], function ($, echarts) {
         getLineOption: function (params) {
             var resjson;
             let option = {
-                tooltip: echartCommon.lineToolTipConfig,
+                tooltip: workCommon.lineToolTipConfig,
                 title: {
                     text: params.title,
                     left: 'left',
@@ -398,20 +398,20 @@ define(['jquery', 'echarts'], function ($, echarts) {
                         color: '#fff'
                     }
                 },
-                grid: echartCommon.gridConfig,
-                dataZoom: echartCommon.dataZoomConfig,
-                xAxis: echartCommon.xAxisConfig,
-                yAxis: [echartCommon.yAxisConfig, echartCommon.yAxisConfig],
+                grid: workCommon.gridConfig,
+                dataZoom: workCommon.dataZoomConfig,
+                xAxis: workCommon.xAxisConfig,
+                yAxis: [workCommon.yAxisConfig, workCommon.yAxisConfig],
                 series: function () {
                     var serie = [];
-                    resjson = echartCommon.getLineOptionData({
+                    resjson = workCommon.getLineOptionData({
                         url: params.url
                     });
                     for (let i = 0; i < resjson.length; i++) {
-                        var item, serieData = echartCommon.time2Datetime(resjson[i].children).serieData,
+                        var item, serieData = workCommon.time2Datetime(resjson[i].children).serieData,
                             regstr = /[\u4e00-\u9fa5、]+/,
                             dataName = resjson[i].itemName.split(regstr).join(""),
-                            color = echartCommon.lineColoObj[dataName];
+                            color = workCommon.lineColoObj[dataName];
                         if (color == undefined) {
                             color = '#ffff00';
                         }
@@ -525,17 +525,17 @@ define(['jquery', 'echarts'], function ($, echarts) {
                         if (option.series[jumpSeriesIndex[i]].data.length == 1) {
                             continue;
                         } else {
-                            option.series[jumpSeriesIndex[i]].markLine = echartCommon.markLineConfig;
-                            option.series[jumpSeriesIndex[i]].markArea = echartCommon.markAreaConfig;
+                            option.series[jumpSeriesIndex[i]].markLine = workCommon.markLineConfig;
+                            option.series[jumpSeriesIndex[i]].markArea = workCommon.markAreaConfig;
                             break;
                         }
                     }
                 }
                 if (param.dataZoom) {
-                    echartCommon.dataZoomConfig[0].start = chartStart;
-                    echartCommon.dataZoomConfig[0].end = chartEnd;
-                    echartCommon.dataZoomConfig[0].startValue = chartStartV;
-                    option.dataZoom = echartCommon.dataZoomConfig;
+                    workCommon.dataZoomConfig[0].start = chartStart;
+                    workCommon.dataZoomConfig[0].end = chartEnd;
+                    workCommon.dataZoomConfig[0].startValue = chartStartV;
+                    option.dataZoom = workCommon.dataZoomConfig;
                 }
                 param.dom.setOption(option);
             }, param.time);
@@ -545,7 +545,7 @@ define(['jquery', 'echarts'], function ($, echarts) {
         getStackOption: function (params) {
             var resjson, xAxisData;
             let option = {
-                tooltip: echartCommon.lineToolTipConfig,
+                tooltip: workCommon.lineToolTipConfig,
                 title: {
                     text: params.title,
                     left: 'left',
@@ -553,21 +553,21 @@ define(['jquery', 'echarts'], function ($, echarts) {
                         color: '#fff'
                     }
                 },
-                grid: echartCommon.gridConfig,
-                dataZoom: echartCommon.dataZoomConfig,
-                xAxis: echartCommon.xAxisConfig,
-                yAxis: [echartCommon.yAxisConfig, echartCommon.yAxisConfig],
+                grid: workCommon.gridConfig,
+                dataZoom: workCommon.dataZoomConfig,
+                xAxis: workCommon.xAxisConfig,
+                yAxis: [workCommon.yAxisConfig, workCommon.yAxisConfig],
                 series: function () {
                     var serie = [];
-                    resjson = echartCommon.getStackOptionData({
+                    resjson = workCommon.getStackOptionData({
                         url: params.url,
                         chartType: params.chartType
                     });
                     for (let i = 0; i < resjson.length; i++) {
-                        var item, serieData = echartCommon.time2Datetime(resjson[i].children).yAxisData
+                        var item, serieData = workCommon.time2Datetime(resjson[i].children).yAxisData
                         dataName = resjson[i].itemName,
-                            color = echartCommon.structColorObj[dataName];
-                        xAxisData = echartCommon.time2Datetime(resjson[i].children).xAxisData;
+                            color = workCommon.structColorObj[dataName];
+                        xAxisData = workCommon.time2Datetime(resjson[i].children).xAxisData;
                         if (color == undefined) {
                             color = '#ffff00';
                         }
@@ -601,7 +601,7 @@ define(['jquery', 'echarts'], function ($, echarts) {
             };
             option.xAxis.type = 'category';
             option.xAxis.data = xAxisData;
-            option.tooltip = echartCommon.stackToolTipConfig;
+            option.tooltip = workCommon.stackToolTipConfig;
             option.yAxis[0].axisLabel.formatter = function (v) {
                 if (v > 0)
                     return Math.round(v)
@@ -636,7 +636,7 @@ define(['jquery', 'echarts'], function ($, echarts) {
             return resjson;
         },
         // 饼图option
-        getPieOption:function(param){
+        getPieOption: function (param) {
             var pieOption = {
                 tooltip: {
                     trigger: 'item',
@@ -673,34 +673,37 @@ define(['jquery', 'echarts'], function ($, echarts) {
             param.dom.setOption(pieOption, true);
         },
         // 结构饼图optionData
-        getPieData:function(param){
-            var needPieDatas = [], needPieColors = [],givePieDatas = [], givePieColors = [],
+        getPieData: function (param) {
+            var needPieDatas = [],
+                needPieColors = [],
+                givePieDatas = [],
+                givePieColors = [],
                 series = param.chart.getOption().series;
             for (var i = 0; i < series.length; i++) {
-                if(series[i].name == 'OUTPUT' || series[i].name == 'IMP' || (series[i].name == 'IC' && series[i].data[param.index] < 0) ){
+                if (series[i].name == 'OUTPUT' || series[i].name == 'IMP' || (series[i].name == 'IC' && series[i].data[param.index] < 0)) {
                     var valueData = {
-                        value: series[i].data[param.index],
-                        name: series[i].name
-                    },
-                    colorData = series[i].itemStyle.color;                
+                            value: series[i].data[param.index],
+                            name: series[i].name
+                        },
+                        colorData = series[i].itemStyle.color;
                     needPieDatas.push(valueData);
                     needPieColors.push(colorData);
-                }else {
+                } else {
                     var valueData = {
-                        value: series[i].data[param.index],
-                        name: series[i].name
-                    },
-                    colorData = series[i].itemStyle.color;                
+                            value: series[i].data[param.index],
+                            name: series[i].name
+                        },
+                        colorData = series[i].itemStyle.color;
                     givePieDatas.push(valueData);
                     givePieColors.push(colorData);
                 }
             }
-            echartCommon.getPieOption({
+            workCommon.getPieOption({
                 data: needPieDatas,
                 color: needPieColors,
                 dom: param.needDom
             });
-            echartCommon.getPieOption({
+            workCommon.getPieOption({
                 data: givePieDatas,
                 color: givePieColors,
                 dom: param.giveDom
@@ -718,8 +721,8 @@ define(['jquery', 'echarts'], function ($, echarts) {
                         show: true,
                         calculable: true
                     },
-                    timeline: echartCommon.timelineConfig,
-                    tooltip: echartCommon.mapToolTipConfig,
+                    timeline: workCommon.timelineConfig,
+                    tooltip: workCommon.mapToolTipConfig,
                     dataRange: {
                         splitNumber: 0,
                         text: ['高', '低'],
@@ -804,8 +807,8 @@ define(['jquery', 'echarts'], function ($, echarts) {
                     timeData[i] = obj;
                 };
                 param.option.baseOption.timeline.data = timeData;
-                param.option.baseOption.dataRange.max = echartCommon.getMaxAndMin(data).max;
-                param.option.baseOption.dataRange.min = echartCommon.getMaxAndMin(data).min;
+                param.option.baseOption.dataRange.max = workCommon.getMaxAndMin(data).max;
+                param.option.baseOption.dataRange.min = workCommon.getMaxAndMin(data).min;
             }
             param.dom.setOption(param.option, true);
         },
@@ -814,7 +817,7 @@ define(['jquery', 'echarts'], function ($, echarts) {
         spotMapOption: function (param) {
             var option = {
                 baseOption: {
-                    tooltip: echartCommon.mapToolTipConfig,
+                    tooltip: workCommon.mapToolTipConfig,
                     title: {
                         text: param.title,
                         left: 'left',
@@ -822,7 +825,7 @@ define(['jquery', 'echarts'], function ($, echarts) {
                             color: '#fff'
                         }
                     },
-                    timeline: echartCommon.timelineConfig,
+                    timeline: workCommon.timelineConfig,
                     geo: {
                         id: 'map',
                         type: 'map',
@@ -906,13 +909,13 @@ define(['jquery', 'echarts'], function ($, echarts) {
                 async: true, //异步
                 success: function (result) {
                     if (param.type == 'colorMap') {
-                        echartCommon.setColorMapOption({
+                        workCommon.setColorMapOption({
                             dom: param.dom,
                             data: result,
                             option: param.option
                         })
                     } else {
-                        echartCommon.setSpotMapOption({
+                        workCommon.setSpotMapOption({
                             dom: param.dom,
                             data: result,
                             option: param.option
@@ -929,150 +932,14 @@ define(['jquery', 'echarts'], function ($, echarts) {
         showMap: function (param) {
             $.get(param.mapUrl, function (mapJson) {
                 echarts.registerMap('china', mapJson);
-                echartCommon.getMapData({
+                workCommon.getMapData({
                     url: param.dataUrl,
                     option: param.option,
                     type: param.type,
                     dom: param.dom
                 });
             })
-        },
-
-        // 折线图拖拽
-        drugOption: function (param) {
-            var option = {
-                title: {
-                    text: param.title,
-                    left: 'left',
-                    textStyle: {
-                        color: '#fff'
-                    }
-                },
-                tooltip: {
-                    triggerOn: 'none',
-                    formatter: function (params) {
-                        if (typeof params.data[0] === "string") {
-                            return '指标: ' + params.seriesName + "<br>" + '时间: ' + params.data[0] + '<br/>数据: ' +
-                                params.data[1].toFixed(2);
-                        } else {
-                            return '指标: ' + params.seriesName + "<br>" + '时间: ' + params.name + '<br/>数据: ' +
-                                params.data[1];
-                        }
-                    }
-                },
-                grid: echartCommon.gridConfig,
-                xAxis: echartCommon.xAxisConfig,
-                yAxis: echartCommon.yAxisConfig,
-                dataZoom: echartCommon.dataZoomConfig,
-                graphic: [],
-                series: function () {
-                    var seriesData = [];
-                    for (var z = 0; z < param.data.length; z++) {
-                        var seriesObj = {
-                            id: param.data[z].id,
-                            name: param.data[z].name,
-                            type: 'line',
-                            smooth: true,
-                            symbolSize: 20,
-                            data: param.data[z].data,
-                        };
-                        seriesData.push(seriesObj);
-                    }
-                    return seriesData;
-                }()
-            };
-            param.dom.setOption(option, true);
-        },
-        // 拖拽函数
-        drugFun: function (param) {
-            var graphicObj = [];
-            setTimeout(function () {
-                for (var i = 0; i < param.data.length; i++) {
-                    var dataObj = {};
-                    graphic: echarts.util.map(param.data[i].data, function (item, dataIndex) {
-                        // if (dataIndex > LENGTH) {
-                        dataObj = {
-                            type: 'circle',
-                            position: param.dom.convertToPixel('grid', item),
-                            shape: {
-                                cx: 0,
-                                cy: 0,
-                                r: 10
-                            },
-                            invisible: false,
-                            draggable: true,
-                            ondrag: echarts.util.curry(echartCommon.onPointDragging, param.data[i], dataIndex, param.dom),
-                            onmousemove: echarts.util.curry(echartCommon.showTooltip, i, dataIndex, param.dom),
-                            onmouseout: echarts.util.curry(echartCommon.hideTooltip, dataIndex, param.dom),
-                            z: 100
-                        };
-                        // } else {
-                        //     dataObj = {
-                        //         type: 'circle',
-                        //         position: myChart.convertToPixel('grid', item),
-                        //         shape: {
-                        //             cx: 0,
-                        //             cy: 0,
-                        //             r: 10
-                        //         },
-                        //         invisible: false,
-                        //         draggable: true,
-                        //         ondrag: echarts.util.curry(echartCommon.onPointDragging, param.data[i], dataIndex, param.dom),
-                        //         onmousemove: echarts.util.curry(echartCommon.showTooltip, i, dataIndex, param.dom),
-                        //         onmouseout: echarts.util.curry(echartCommon.hideTooltip, dataIndex, param.dom),
-                        //         z: 100
-                        //     };
-                        // }
-                        graphicObj.push(dataObj);
-                    })
-                }
-            }, 0);
-            setTimeout(function () {
-                param.dom.setOption({
-                    graphic: graphicObj
-                });
-            }, 100);
-        },
-        // tooltip函数
-        showTooltip: function (index, dataIndex, dom) {
-            dom.dispatchAction({
-                type: 'showTip',
-                seriesIndex: index,
-                dataIndex: dataIndex
-            });
-        },
-        hideTooltip: function (dataIndex, dom) {
-            dom.dispatchAction({
-                type: 'hideTip'
-            });
-        },
-        // point拖拽过程的函数
-        onPointDragging: function (line, dataIndex, dom) {
-            var dateData = line.data[dataIndex][0];
-            this.position[0] = dom.convertToPixel('grid', line.data[dataIndex])[0];
-            line.data[dataIndex] = dom.convertFromPixel('grid', this.position);
-            line.data[dataIndex][0] = dateData;
-            dom.setOption({
-                series: [{
-                    id: line.id,
-                    data: line.data
-                }]
-            });
-        },
-        updatePosition: function (param) {
-            var graphicObj = [];
-            for (var j = 0; j < param.data.length; j++) {
-                graphic: echarts.util.map(param.data[j].data, function (item, dataIndex) {
-                    var dataObj = {
-                        position: param.dom.convertToPixel('grid', item)
-                    };
-                    graphicObj.push(dataObj);
-                })
-            }
-            param.dom.setOption({
-                graphic: graphicObj
-            });
         }
     }
-    return echartCommon;
+    return workCommon;
 })

@@ -2,6 +2,9 @@
     width: 1200px;
     margin: 0 auto;
 }
+.clear{
+    clear: both;
+}
 #stackChart{
     width: 800px;
     height: 600px;
@@ -21,7 +24,4 @@
 #doubleLineChart{
     width: 1200px;
     height: 600px;
-}
-.clear{
-    clear: both;
 }

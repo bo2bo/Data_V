@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=640">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>EchartJs Demo</title>
+    <link rel="stylesheet" href="./../assets/css/base.css">
+    <link rel="stylesheet" href="./../assets/css/ztreeEcharts.css">
+</head>
+
+<body>
+    <div class="content">
+        <div id="macro_OPI" node="flexboxtab" class="macroopi">
+            <div class="treetitle">
+                <i class="anglebttom"></i> OPI分项选择
+                <span class="treebubble">37</span>
+            </div>
+            <!-- tree start -->
+            <div class="zTreeDemoBackground macrotreeleft" node="listfoot">
+                <ul id="treeDemoOpi" class="ztree"></ul>
+            </div>
+            <div class="treefoot" node="listfoot">
+                <a href="javascript:;" id="treeresetOpi">重置</a>
+                <a href="javascript:;" id="treesubmitOpi">确定</a>
+            </div>
+            <!-- tree end -->
+            <div id="macro_opi_background" class="macro_opi_background">
+                <div id="datatypeflag" class="clear">
+                    <ul class="datatypebox">
+                        <li id="absOpi" class="datatypeswitch active">总量</li>
+                        <li id="incOpi" class="datatypeswitch">增量</li>
+                        <li id="yoygrewOpi" class="datatypeswitch">同比增速</li>
+                    </ul>
+                    <a href="#" id="setyaxisopi" class="setyaxisopi">切换左右轴</a>
+                </div>
+                <div id="macro_opi_ratio" class="macro_opi_ratio"></div>
+                <div id="macro_opi_data" class="macro_opi_data"></div>
+                <div id="macro_opi_detailbox" class="macro_opi_detailbox">
+                    <div id="macro_opi_detail" class="macro_opi_detail"></div>
+                    <i id="close_detail_opi" class="close_detail i_closeGround icon icon_m"> </i>
+                </div>
+            </div>
+            <div id="legendboxopi"></div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="./../assets/js/dist/require.min.js"></script>
+
+<!-- 避免出现插件未加载完成就执行js代码 -->
+<script>
+    requirejs.config({
+        baseUrl: './../assets/js'
+    });
+</script>
+<script src="./../assets/js/config.js"></script>
+<script>
+    require([
+        './../assets/js/ztreeEcharts.js'
+    ])
+</script>
+
+</html>

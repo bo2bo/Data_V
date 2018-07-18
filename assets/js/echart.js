@@ -6,43 +6,58 @@ define(['jquery', 'echarts', 'echartCommon'], function ($, echarts, echartCommon
         barLineChart = echarts.init(document.getElementById('barLineChart'));
         colorMapChart = echarts.init(document.getElementById('colorMapChart'));
         pointMapChart = echarts.init(document.getElementById('pointMapChart'));
-        drugLineChart = echarts.init(document.getElementById('drugLineChart'));
+        drugLineChart = echarts.init(document.getElementById('drugLineChart'));        
+        needChart = echarts.init(document.getElementById('needChart'));
+        giveChart = echarts.init(document.getElementById('giveChart'));
         // 堆积图
-        var stackChartOption = echartCommon.getOption({
+        var stackChartOption = echartCommon.getStackOption({
             url: "./../assets/js/json/stackData.json",
             title: '堆积图',
-            chartType: 'stack'
+            chartType: 'struct'
         });
         stackChart.setOption(stackChartOption);
+        echartCommon.getPieData({
+            index: stackChart.getOption().series.length-1,
+            needDom: needChart,
+            giveDom: giveChart,
+            chart: stackChart
+        });
+        stackChart.on('click', function (params) {
+            echartCommon.getPieData({
+                index: params.dataIndex,
+                needDom: needChart,
+                giveDom: giveChart,
+                chart: stackChart
+            });
+        })
         // 闪烁折线图
-        var jumpLineChartOption = echartCommon.getOption({
+        var jumpLineChartOption = echartCommon.getLineOption({
             url: "./../assets/js/json/jumpLineData.json",
-            title: '闪烁折线图',
-            chartType: 'line'
+            title: '闪烁折线图'
         });
         echartCommon.jumpChart({
             dom: jumpLineChart,
             option: jumpLineChartOption,
-            isDataZoom: true,
+            dataZoom: true,
+            markLine: true,
             time: 100
         });
         // 多线闪动
-        var doubleLineChartOption = echartCommon.getOption({
+        var doubleLineChartOption = echartCommon.getLineOption({
             url: "./../assets/js/json/doubleLineData.json",
-            title: '多线闪动',
-            chartType: 'line'
+            title: '多线闪动'
         })
         echartCommon.jumpChart({
             dom: doubleLineChart,
             option: doubleLineChartOption,
-            isDataZoom: true,
+            dataZoom: true,
+            markLine: true,
             time: 100
         });
         // 折线柱状图
-        var barLineChartOption = echartCommon.getOption({
+        var barLineChartOption = echartCommon.getLineOption({
             url: "./../assets/js/json/lineBarData.json",
-            title: '闪烁折线柱状图',
-            chartType: 'line'
+            title: '闪烁折线柱状图'
         });
         barLineChartOption.series[0].type = 'bar';
         barLineChartOption.series[1].type = 'bar';
@@ -103,7 +118,8 @@ define(['jquery', 'echarts', 'echartCommon'], function ($, echarts, echartCommon
         echartCommon.jumpChart({
             dom: barLineChart,
             option: barLineChartOption,
-            isDataZoom: true,
+            dataZoom: true,
+            markLine: true,
             time: 100
         });
 
@@ -131,7 +147,7 @@ define(['jquery', 'echarts', 'echartCommon'], function ($, echarts, echartCommon
             dom: pointMapChart
         });
         // 线图拖拽功能
-        var drugData = echartCommon.getOptionData({
+        var drugData = echartCommon.getLineOptionData({
             url: './../assets/js/json/drugLineData.json'
         });
         echartCommon.drugOption({

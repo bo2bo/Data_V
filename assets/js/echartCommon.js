@@ -271,13 +271,50 @@ define(['jquery', 'echarts'], function ($, echarts) {
             backgroundColor: 'rgba(0,0,0,0.6)',
             formatter: function (params, ticket, callback) {
                 var tips = params[0].name + '</br>';
-                debugger;
                 var paramslen = params.length;
                 for (var i = 0; i < paramslen; i++) {
                     tips += params[i].seriesName + ':' + Math.abs(params[i].value.toFixed(2)) + '<br/>'
                 }
                 return tips;
             }
+        },
+        markAreaConfig:{
+            silent: true,
+            itemStyle: {
+                normal: {
+                    color: 'rgba(255,255,255,0.6)',
+                    opacity: 0.1
+                }
+            },
+            data: [
+                [{
+                    xAxis: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+                }, {
+                    xAxis: 'max'
+                }]
+            ]
+        },
+        markLineConfig:{
+            symbol: ['none', 'none'],
+            silent: true,
+            label: {
+                normal: {
+                    show: true,
+                    formatter: function(){
+                        return echartCommon.getTime().untilDay + ' ' + echartCommon.getTime().untilSecond
+                    }
+                }
+            },
+            lineStyle: {
+                normal: {
+                    type: 'dotted',
+                    color: "#eeeeef",
+                    width: 2
+                }
+            },
+            data: [{
+                xAxis: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
+            }]
         },
         // 获取最大值最小值
         getMaxAndMin: function (data) {
@@ -349,9 +386,9 @@ define(['jquery', 'echarts'], function ($, echarts) {
                 untilSecond: untilSecond
             }
         },
-        // option
-        getOption: function (params) {
-            var resjson, xAxisData;
+        // 闪图option
+        getLineOption: function (params) {
+            var resjson;
             let option = {
                 tooltip: echartCommon.lineToolTipConfig,
                 title: {
@@ -367,98 +404,49 @@ define(['jquery', 'echarts'], function ($, echarts) {
                 yAxis: [echartCommon.yAxisConfig, echartCommon.yAxisConfig],
                 series: function () {
                     var serie = [];
-                    resjson = echartCommon.getOptionData({
-                        url: params.url,
-                        chartType: params.chartType
+                    resjson = echartCommon.getLineOptionData({
+                        url: params.url
                     });
-                    if (params.chartType == 'stack') {
-                        for (let i = 0; i < resjson.length; i++) {
-                            var item, serieData = echartCommon.time2Datetime(resjson[i].children).yAxisData
-                            dataName = resjson[i].itemName,
-                                color = echartCommon.structColorObj[dataName];
-                            xAxisData = echartCommon.time2Datetime(resjson[i].children).xAxisData;
-                            if (color == undefined) {
-                                color = '#ffff00';
-                            }
-                            item = {
-                                name: resjson[i].itemName,
-                                type: 'bar',
-                                showAllSymbol: false,
-                                symbol: 'circle',
-                                symbolSize: 4,
-                                data: serieData,
-                                yAxisIndex: 0,
-                                smooth: true,
-                                itemStyle: {
-                                    normal: {
-                                        color: color,
-                                        lineStyle: {
-                                            width: 2,
-                                            type: 'solid',
-                                            color: color
-                                        }
-                                    }
-                                },
-                                stack: '总量',
-                                markLine: {},
-                                markArea: {}
-                            };
-                            serie.push(item);
+                    for (let i = 0; i < resjson.length; i++) {
+                        var item, serieData = echartCommon.time2Datetime(resjson[i].children).serieData,
+                            regstr = /[\u4e00-\u9fa5、]+/,
+                            dataName = resjson[i].itemName.split(regstr).join(""),
+                            color = echartCommon.lineColoObj[dataName];
+                        if (color == undefined) {
+                            color = '#ffff00';
                         }
-                    } else {
-                        for (let i = 0; i < resjson.length; i++) {
-                            var item, serieData = echartCommon.time2Datetime(resjson[i].children).serieData,
-                                regstr = /[\u4e00-\u9fa5、]+/,
-                                dataName = resjson[i].itemName.split(regstr).join(""),
-                                color = echartCommon.lineColoObj[dataName];
-                            if (color == undefined) {
-                                color = '#ffff00';
-                            }
-                            item = {
-                                name: resjson[i].itemName,
-                                type: 'line',
-                                showAllSymbol: false,
-                                symbol: 'circle',
-                                symbolSize: 4,
-                                data: serieData,
-                                yAxisIndex: 0,
-                                smooth: true,
-                                itemStyle: {
-                                    normal: {
-                                        color: color,
-                                        lineStyle: {
-                                            width: 2,
-                                            type: 'solid',
-                                            color: color
-                                        }
+                        item = {
+                            name: resjson[i].itemName,
+                            type: 'line',
+                            showAllSymbol: false,
+                            symbol: 'circle',
+                            symbolSize: 4,
+                            data: serieData,
+                            yAxisIndex: 0,
+                            smooth: true,
+                            itemStyle: {
+                                normal: {
+                                    color: color,
+                                    lineStyle: {
+                                        width: 2,
+                                        type: 'solid',
+                                        color: color
                                     }
-                                },
-                                markLine: {},
-                                markArea: {}
-                            };
-                            serie.push(item);
-                        }
+                                }
+                            },
+                            markLine: {},
+                            markArea: {}
+                        };
+                        serie.push(item);
                     }
                     return serie;
                 }()
             };
-            if (params.chartType == 'stack') {
-                option.xAxis.type = 'category';
-                option.xAxis.data = xAxisData;
-                option.tooltip = echartCommon.stackToolTipConfig;
-                option.yAxis[0].axisLabel.formatter = function (v) {
-                    if (v > 0)
-                        return Math.round(v)
-                    else
-                        return -Math.round(v)
-                };
-            } else {
-                option.xAxis.type = 'time';
-            }
+            option.xAxis.type = 'time';
             return option;
         },
         //请求带闪烁的option数据
-        getOptionData: function (param) {
+        getLineOptionData: function (param) {
             var resjson;
             $.ajax({
                 type: "get",
@@ -466,15 +454,6 @@ define(['jquery', 'echarts'], function ($, echarts) {
                 async: false, //同步
                 success: function (result) {
                     resjson = result;
-                    if (param.chartType == 'stack') {
-                        for (var i = 0; i < resjson.length; i++) {
-                            if (resjson[i]['itemName'] == 'IMP' || resjson[i]['itemName'] == 'OUTPUT') {
-                                for (var j = 0; j < resjson[i]['children'].length; j++) {
-                                    resjson[i]['children'][j]['value'] = -resjson[i]['children'][j]['value'];
-                                }
-                            }
-                        }
-                    }
                 },
                 error: function (err) {
                     console.log(err)
@@ -482,7 +461,6 @@ define(['jquery', 'echarts'], function ($, echarts) {
             });
             return resjson;
         },
-
         //预测折线图闪烁
         jumpChart: function (param) {
             let option = param.option,
@@ -542,61 +520,192 @@ define(['jquery', 'echarts'], function ($, echarts) {
                         }
                     };
                 }
-                for (var i = 0; i < jumpSeriesIndex.length; i++) {
-                    if (option.series[jumpSeriesIndex[i]].data.length == 1) {
-                        continue;
-                    } else {
-                        option.series[jumpSeriesIndex[i]].markLine = {
-                            symbol: ['none', 'none'],
-                            silent: true,
-                            label: {
-                                normal: {
-                                    show: true,
-                                    formatter: echartCommon.getTime().untilDay + ' ' + echartCommon.getTime().untilSecond
-                                }
-                            },
-                            lineStyle: {
-                                normal: {
-                                    type: 'dotted',
-                                    color: "#eeeeef",
-                                    width: 2
-                                }
-                            },
-                            data: [{
-                                xAxis: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
-                            }]
-                        };
-                        option.series[jumpSeriesIndex[i]].markArea = {
-                            silent: true,
-                            itemStyle: {
-                                normal: {
-                                    color: 'rgba(255,255,255,0.6)',
-                                    opacity: 0.1
-                                }
-                            },
-                            data: [
-                                [{
-                                    xAxis: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
-                                }, {
-                                    xAxis: 'max'
-                                }]
-                            ]
-                        };
-                        break;
+                if (param.markLine) {
+                    for (var i = 0; i < jumpSeriesIndex.length; i++) {
+                        if (option.series[jumpSeriesIndex[i]].data.length == 1) {
+                            continue;
+                        } else {
+                            option.series[jumpSeriesIndex[i]].markLine = echartCommon.markLineConfig;
+                            option.series[jumpSeriesIndex[i]].markArea = echartCommon.markAreaConfig;
+                            break;
+                        }
                     }
                 }
-                if (param.isDataZoom) {
+                if (param.dataZoom) {
                     echartCommon.dataZoomConfig[0].start = chartStart;
                     echartCommon.dataZoomConfig[0].end = chartEnd;
                     echartCommon.dataZoomConfig[0].startValue = chartStartV;
                     option.dataZoom = echartCommon.dataZoomConfig;
-
                 }
                 param.dom.setOption(option);
             }, param.time);
             jumpIntervalMap[id] = thisJumpInterval;
         },
-
+        // 获取堆积图Option
+        getStackOption: function (params) {
+            var resjson, xAxisData;
+            let option = {
+                tooltip: echartCommon.lineToolTipConfig,
+                title: {
+                    text: params.title,
+                    left: 'left',
+                    textStyle: {
+                        color: '#fff'
+                    }
+                },
+                grid: echartCommon.gridConfig,
+                dataZoom: echartCommon.dataZoomConfig,
+                xAxis: echartCommon.xAxisConfig,
+                yAxis: [echartCommon.yAxisConfig, echartCommon.yAxisConfig],
+                series: function () {
+                    var serie = [];
+                    resjson = echartCommon.getStackOptionData({
+                        url: params.url,
+                        chartType: params.chartType
+                    });
+                    for (let i = 0; i < resjson.length; i++) {
+                        var item, serieData = echartCommon.time2Datetime(resjson[i].children).yAxisData
+                        dataName = resjson[i].itemName,
+                            color = echartCommon.structColorObj[dataName];
+                        xAxisData = echartCommon.time2Datetime(resjson[i].children).xAxisData;
+                        if (color == undefined) {
+                            color = '#ffff00';
+                        }
+                        item = {
+                            name: resjson[i].itemName,
+                            type: 'bar',
+                            showAllSymbol: false,
+                            symbol: 'circle',
+                            symbolSize: 4,
+                            data: serieData,
+                            yAxisIndex: 0,
+                            smooth: true,
+                            itemStyle: {
+                                normal: {
+                                    color: color,
+                                    lineStyle: {
+                                        width: 2,
+                                        type: 'solid',
+                                        color: color
+                                    }
+                                }
+                            },
+                            stack: '总量',
+                            markLine: {},
+                            markArea: {}
+                        };
+                        serie.push(item);
+                    }
+                    return serie;
+                }()
+            };
+            option.xAxis.type = 'category';
+            option.xAxis.data = xAxisData;
+            option.tooltip = echartCommon.stackToolTipConfig;
+            option.yAxis[0].axisLabel.formatter = function (v) {
+                if (v > 0)
+                    return Math.round(v)
+                else
+                    return -Math.round(v)
+            };
+            return option;
+        },
+        // 获取堆积图option数据
+        getStackOptionData: function (param) {
+            var resjson;
+            $.ajax({
+                type: "get",
+                url: param.url,
+                async: false, //异步
+                success: function (result) {
+                    resjson = result;
+                    if (param.chartType == 'struct') {
+                        for (var i = 0; i < resjson.length; i++) {
+                            if (resjson[i]['itemName'] == 'IMP' || resjson[i]['itemName'] == 'OUTPUT') {
+                                for (var j = 0; j < resjson[i]['children'].length; j++) {
+                                    resjson[i]['children'][j]['value'] = -resjson[i]['children'][j]['value'];
+                                }
+                            }
+                        }
+                    };
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            });
+            return resjson;
+        },
+        // 饼图option
+        getPieOption:function(param){
+            var pieOption = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function (params) {
+                        return params.data.name + '<br/>数值:' + parseFloat(params.data.value).toFixed(2) + '(' + params.percent + '%)';
+                    },
+                },
+                color: param.color,
+                series: [{
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['50%', '55%'],
+                    label: {
+                        normal: {
+                            color: '#fff',
+                            formatter: "{b}\n{d}%",
+                            textStyle: {
+                                fontWeight: 'normal',
+                                fontSize: 12
+                            },
+                            position: 'outside'
+                        }
+                    },
+                    data: param.data,
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }]
+            };
+            param.dom.setOption(pieOption, true);
+        },
+        // 结构饼图optionData
+        getPieData:function(param){
+            var needPieDatas = [], needPieColors = [],givePieDatas = [], givePieColors = [],
+                series = param.chart.getOption().series;
+            for (var i = 0; i < series.length; i++) {
+                if(series[i].name == 'OUTPUT' || series[i].name == 'IMP' || (series[i].name == 'IC' && series[i].data[param.index] < 0) ){
+                    var valueData = {
+                        value: series[i].data[param.index],
+                        name: series[i].name
+                    },
+                    colorData = series[i].itemStyle.color;                
+                    needPieDatas.push(valueData);
+                    needPieColors.push(colorData);
+                }else {
+                    var valueData = {
+                        value: series[i].data[param.index],
+                        name: series[i].name
+                    },
+                    colorData = series[i].itemStyle.color;                
+                    givePieDatas.push(valueData);
+                    givePieColors.push(colorData);
+                }
+            }
+            echartCommon.getPieOption({
+                data: needPieDatas,
+                color: needPieColors,
+                dom: param.needDom
+            });
+            echartCommon.getPieOption({
+                data: givePieDatas,
+                color: givePieColors,
+                dom: param.giveDom
+            });
+        },
         //色温图配置
         colorMapOption: function (param) {
             var option = {
@@ -670,6 +779,36 @@ define(['jquery', 'echarts'], function ($, echarts) {
             };
             return option;
         },
+        /**
+         * 功能：色温图的setOption
+         */
+        setColorMapOption: function (param) {
+            if (param.data.datas.length) {
+                var timeData = [],
+                    data = param.data.datas[param.data.index].data;
+                for (var i = 0; i < param.data.datas.length; i++) {
+                    timeData.push(param.data.datas[i].date);
+                    param.option.options.push({
+                        series: {
+                            data: param.data.datas[i].data
+                        }
+                    })
+                }
+                param.option.baseOption.timeline.currentIndex = param.data.index;
+                for (var i = param.data.index + 1; i < timeData.length; i++) {
+                    var obj = {
+                        value: timeData[i],
+                        symbol: 'circle',
+                        symbolSize: 8
+                    };
+                    timeData[i] = obj;
+                };
+                param.option.baseOption.timeline.data = timeData;
+                param.option.baseOption.dataRange.max = echartCommon.getMaxAndMin(data).max;
+                param.option.baseOption.dataRange.min = echartCommon.getMaxAndMin(data).min;
+            }
+            param.dom.setOption(param.option, true);
+        },
 
         // 点状地图配置
         spotMapOption: function (param) {
@@ -740,55 +879,44 @@ define(['jquery', 'echarts'], function ($, echarts) {
             }
             return option;
         },
-
+        /**
+         * 功能：点状地图的setOption
+         */
+        setSpotMapOption: function (param) {
+            if (param.data.datas.length) {
+                var timeData = [];
+                for (var i = 0; i < param.data.datas.length; i++) {
+                    timeData.push(param.data.datas[i].date);
+                    param.option.options.push({
+                        series: {
+                            data: param.data.datas[i].data
+                        }
+                    })
+                }
+                param.option.baseOption.timeline.data = timeData;
+                param.option.baseOption.timeline.currentIndex = timeData.length - 1;
+            }
+            param.dom.setOption(param.option, true);
+        },
         // 获取地图数据
         getMapData: function (param) {
             $.ajax({
                 url: param.url,
                 type: 'get',
-                async: false, //同步
+                async: true, //异步
                 success: function (result) {
                     if (param.type == 'colorMap') {
-                        if (result.datas.length) {
-                            var timeData = [],
-                                data = result.datas[result.index].data;
-                            for (var i = 0; i < result.datas.length; i++) {
-                                timeData.push(result.datas[i].date);
-                                param.option.options.push({
-                                    series: {
-                                        data: result.datas[i].data
-                                    }
-                                })
-                            }
-                            param.option.baseOption.timeline.currentIndex = result.index;
-                            for (var i = result.index + 1; i < timeData.length; i++) {
-                                var obj = {
-                                    value: timeData[i],
-                                    symbol: 'circle',
-                                    symbolSize: 8
-                                };
-                                timeData[i] = obj;
-                            };
-                            param.option.baseOption.timeline.data = timeData;
-                            param.option.baseOption.dataRange.max = echartCommon.getMaxAndMin(data).max;
-                            param.option.baseOption.dataRange.min = echartCommon.getMaxAndMin(data).min;
-                        }
-                        param.dom.setOption(param.option, true);
+                        echartCommon.setColorMapOption({
+                            dom: param.dom,
+                            data: result,
+                            option: param.option
+                        })
                     } else {
-                        if (result.datas.length) {
-                            var timeData = [];
-                            for (var i = 0; i < result.datas.length; i++) {
-                                timeData.push(result.datas[i].date);
-                                param.option.options.push({
-                                    series: {
-                                        data: result.datas[i].data
-                                    }
-                                })
-                            }
-                            param.option.baseOption.timeline.data = timeData;
-                            param.option.baseOption.timeline.currentIndex = timeData.length - 1;
-                        }
-                        param.dom.setOption(param.option, true);
+                        echartCommon.setSpotMapOption({
+                            dom: param.dom,
+                            data: result,
+                            option: param.option
+                        })
                     }
                 },
                 error: function (err) {
@@ -808,11 +936,6 @@ define(['jquery', 'echarts'], function ($, echarts) {
                     dom: param.dom
                 });
             })
-        },
-
-        // 堆积图Option
-        option: function (param) {
-
         },
 
         // 折线图拖拽

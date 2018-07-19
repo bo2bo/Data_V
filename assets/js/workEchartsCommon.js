@@ -343,8 +343,8 @@ define(['jquery', 'echarts'], function ($, echarts) {
                 xAxisArray = new Array(),
                 yAxisArray = new Array();
             for (var i = 0; i < array.length; i++) {
-                copyArray[i] = [new Date(array[i].date), array[i].value];
-                xAxisArray[i] = array[i].date;
+                copyArray[i] = [new Date(array[i].date || array[i].statDate), array[i].value];
+                xAxisArray[i] = array[i].date || array[i].statDate;
                 yAxisArray[i] = array[i].value;
             }
             return {
@@ -377,18 +377,19 @@ define(['jquery', 'echarts'], function ($, echarts) {
             if (second < 10) {
                 second = '0' + second;
             }
-            var untilDay = year + '-' + month + '-' + date;
-            var untilSecond = hours + ':' + minutes + ':' + second;
+            var untilDay = year + '-' + month + '-' + date,
+                untilMonth = year + month,
+                untilSecond = hours + ':' + minutes + ':' + second;
             return {
                 year: year,
                 month: month,
                 untilDay: untilDay,
+                untilMonth: untilMonth,
                 untilSecond: untilSecond
             }
         },
         // 闪图option
         getLineOption: function (params) {
-            var resjson;
             let option = {
                 tooltip: workCommon.lineToolTipConfig,
                 title: {
@@ -402,21 +403,97 @@ define(['jquery', 'echarts'], function ($, echarts) {
                 dataZoom: workCommon.dataZoomConfig,
                 xAxis: workCommon.xAxisConfig,
                 yAxis: [workCommon.yAxisConfig, workCommon.yAxisConfig],
-                series: function () {
-                    var serie = [];
-                    resjson = workCommon.getLineOptionData({
-                        url: params.url
-                    });
-                    for (let i = 0; i < resjson.length; i++) {
-                        var item, serieData = workCommon.time2Datetime(resjson[i].children).serieData,
+                series: []
+            };
+            option.xAxis.type = 'time';
+            workCommon.getOptionData({
+                url: params.url,
+                dom: params.dom,
+                dataZoom: params.dataZoom,
+                markLine: params.markLine,
+                time: params.time,
+                option: option,
+                allLine: params.allLine
+            })
+        },
+        barLineOption: function (param) {
+            var returnOption = param.option;
+            returnOption.series[0].type = 'bar';
+            returnOption.series[1].type = 'bar';
+            // 设置左右y轴
+            returnOption.series[0].yAxisIndex = 1;
+            returnOption.series[1].yAxisIndex = 1;
+            // dataZoom改变时bar重叠
+            returnOption.series[0].barWidth = '36px';
+            returnOption.series[1].barWidth = '36px';
+            returnOption.series[0].barMaxWidth = '36px';
+            returnOption.series[1].barMaxWidth = '36px';
+            // line点放到柱状图的正中间
+            returnOption.series[0].barCategoryGap = '60%';
+            returnOption.series[1].barCategoryGap = '60%';
+            returnOption.series[0].barGap = '-100%';
+            returnOption.series[1].barGap = '-100%';
+            // bar渐变色
+            returnOption.series[0].itemStyle.normal.color = new echarts.graphic.LinearGradient(
+                0, 0, 0, 1, [{
+                        offset: 0,
+                        color: '#0ec8ff'
+                    },
+                    {
+                        offset: 1,
+                        color: '#185aff'
+                    }
+                ]
+            );
+            returnOption.series[1].itemStyle.normal.color = new echarts.graphic.LinearGradient(
+                0, 0, 0, 1, [{
+                        offset: 0,
+                        color: '#0ec8ff'
+                    },
+                    {
+                        offset: 1,
+                        color: '#185aff'
+                    }
+                ]
+            );
+            returnOption.xAxis.axisLine.onZero = false;
+            returnOption.yAxis[0].axisLabel.fontSise = 12;
+            returnOption.yAxis[1].axisLabel.fontSise = 12;
+            returnOption.yAxis[1].axisLabel.margin = 30;
+            returnOption.yAxis[0].axisLabel.margin = 30;
+            param.dom.on('datazoom', function (dataZoomChange) {
+                if ((returnOption.dataZoom[0].end - returnOption.dataZoom[0].start) < 15) {
+                    returnOption.series[0].barWidth = '36px';
+                    returnOption.series[1].barWidth = '36px';
+                    returnOption.series[0].barMaxWidth = '36px';
+                    returnOption.series[1].barMaxWidth = '36px';
+                } else {
+                    returnOption.series[0].barWidth = 'auto';
+                    returnOption.series[1].barWidth = 'auto';
+                    returnOption.series[0].barMaxWidth = 'auto';
+                    returnOption.series[1].barMaxWidth = 'auto';
+                }
+            });
+            return returnOption;
+        },
+        //请求带闪烁的option数据
+        getOptionData: function (param) {
+            $.ajax({
+                type: "get",
+                url: param.url,
+                async: true,
+                success: function (result) {
+                    var seriesData = [];
+                    for (let i = 0; i < result.length; i++) {
+                        var item, serieData = workCommon.time2Datetime(result[i].children).serieData,
                             regstr = /[\u4e00-\u9fa5、]+/,
-                            dataName = resjson[i].itemName.split(regstr).join(""),
+                            dataName = result[i].itemName.split(regstr).join(""),
                             color = workCommon.lineColoObj[dataName];
                         if (color == undefined) {
                             color = '#ffff00';
                         }
                         item = {
-                            name: resjson[i].itemName,
+                            name: result[i].itemName,
                             type: 'line',
                             showAllSymbol: false,
                             symbol: 'circle',
@@ -437,29 +514,27 @@ define(['jquery', 'echarts'], function ($, echarts) {
                             markLine: {},
                             markArea: {}
                         };
-                        serie.push(item);
+                        seriesData.push(item);
                     }
-                    return serie;
-                }()
-            };
-            option.xAxis.type = 'time';
-            return option;
-        },
-        //请求带闪烁的option数据
-        getLineOptionData: function (param) {
-            var resjson;
-            $.ajax({
-                type: "get",
-                url: param.url,
-                async: false, //同步
-                success: function (result) {
-                    resjson = result;
+                    param.option.series = seriesData;
+                    if (!param.allLine) {
+                        param.option = workCommon.barLineOption({
+                            option: param.option,
+                            dom: param.dom
+                        })
+                    }
+                    workCommon.jumpChart({
+                        dom: param.dom,
+                        option: param.option,
+                        dataZoom: param.dataZoom,
+                        markLine: param.markLine,
+                        time: param.time
+                    });
                 },
                 error: function (err) {
                     console.log(err)
                 }
             });
-            return resjson;
         },
         //预测折线图闪烁
         jumpChart: function (param) {
@@ -543,7 +618,7 @@ define(['jquery', 'echarts'], function ($, echarts) {
         },
         // 获取堆积图Option
         getStackOption: function (params) {
-            var resjson, xAxisData,legendData=[];
+            var resjson, xAxisData, legendData = [];
             let option = {
                 tooltip: workCommon.lineToolTipConfig,
                 title: {
@@ -552,12 +627,12 @@ define(['jquery', 'echarts'], function ($, echarts) {
                     textStyle: {
                         color: '#fff'
                     },
-                    show:false
+                    show: false
                 },
                 legend: {
                     data: [],
-                    textStyle:{
-                        color:"#fff"
+                    textStyle: {
+                        color: "#fff"
                     }
                 },
                 grid: workCommon.gridConfig,
@@ -574,7 +649,7 @@ define(['jquery', 'echarts'], function ($, echarts) {
                         var item, serieData = workCommon.time2Datetime(resjson[i].children).yAxisData
                         dataName = resjson[i].itemName,
                             color = workCommon.structColorObj[dataName];
-                            legendData.push(dataName);
+                        legendData.push(dataName);
                         xAxisData = workCommon.time2Datetime(resjson[i].children).xAxisData;
                         if (color == undefined) {
                             color = '#ffff00';

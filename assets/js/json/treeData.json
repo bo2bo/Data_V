@@ -1,0 +1,316 @@
+[{
+    "name": "消费品",
+    "pId": 0,
+    "id": 400,
+    "remarks": "消费品",
+    "open": true,
+    "checked": true
+},
+{
+    "name": "原材料",
+    "pId": 0,
+    "id": 500,
+    "remarks": "原材料",
+    "open": true,
+    "checked": true
+},
+{
+    "name": "设备制造",
+    "pId": 0,
+    "id": 600,
+    "remarks": "设备制造",
+    "open": true,
+    "checked": true
+},
+{
+    "name": "采选业",
+    "pId": 0,
+    "id": 700,
+    "remarks": "采选业",
+    "open": true,
+    "checked": true
+},
+{
+    "name": "农业",
+    "pId": 0,
+    "id": 800,
+    "remarks": "农业",
+    "open": true,
+    "checked": true
+},
+{
+    "name": "建筑业",
+    "pId": 0,
+    "id": 900,
+    "remarks": "建筑业",
+    "open": true,
+    "checked": true
+},
+{
+    "name": "其他",
+    "pId": 0,
+    "id": 1000,
+    "remarks": "其他",
+    "open": true,
+    "checked": true
+},
+{
+    "name": "农副食品加工业",
+    "pId": 400,
+    "id": 401,
+    "indus_code": "OPI_C_ASFP",
+    "checked": true
+},
+{
+    "name": "食品制造业",
+    "pId": 400,
+    "id": 402,
+    "indus_code": "OPI_C_FMI",
+    "checked": true
+},
+{
+    "name": "酒、饮料和精制茶制造业",
+    "pId": 400,
+    "id": 403,
+    "indus_code": "OPI_C_BRM",
+    "checked": true
+},
+{
+    "name": "烟草制品业",
+    "pId": 400,
+    "id": 404,
+    "indus_code": "OPI_C_TPI",
+    "checked": true
+},
+{
+    "name": "纺织业",
+    "pId": 400,
+    "id": 405,
+    "indus_code": "OPI_C_TID",
+    "checked": true
+},
+{
+    "name": "纺织服装、鞋、帽制造业",
+    "pId": 400,
+    "id": 406,
+    "indus_code": "OPI_C_TCSC",
+    "checked": true
+},
+{
+    "name": "皮革、毛皮、羽毛（绒）及其制品业",
+    "pId": 400,
+    "id": 407,
+    "indus_code": "OPI_C_LFIP",
+    "checked": true
+},
+{
+    "name": "木材加工及木、竹、藤、棕、草制品业",
+    "pId": 400,
+    "id": 408,
+    "indus_code": "OPI_C_FPGI",
+    "checked": true
+},
+{
+    "name": "家具制造业",
+    "pId": 400,
+    "id": 409,
+    "indus_code": "OPI_C_FMID",
+    "checked": true
+},
+{
+    "name": "医药制造业",
+    "pId": 400,
+    "id": 410,
+    "indus_code": "OPI_C_PMI",
+    "checked": true
+},
+{
+    "name": "造纸及纸制品业",
+    "pId": 400,
+    "id": 411,
+    "indus_code": "OPI_C_PPI",
+    "checked": true
+},
+{
+    "name": "印刷业和记录媒介的复制业",
+    "pId": 400,
+    "id": 412,
+    "indus_code": "OPI_C_PICI",
+    "checked": true
+},
+{
+    "name": "文教体育用品制造业",
+    "pId": 400,
+    "id": 413,
+    "indus_code": "OPI_C_CESI",
+    "checked": true
+},
+{
+    "name": "石油加工、炼焦及核燃料加工业",
+    "pId": 500,
+    "id": 501,
+    "indus_code": "OPI_R_PCN",
+    "checked": true
+},
+{
+    "name": "化学原料及化学制品制造业",
+    "pId": 500,
+    "id": 502,
+    "indus_code": "OPI_R_CMCP",
+    "checked": true
+},
+{
+    "name": "化学纤维制造业",
+    "pId": 500,
+    "id": 503,
+    "indus_code": "OPI_R_CFMI",
+    "checked": true
+},
+{
+    "name": "橡胶和塑料制品业",
+    "pId": 500,
+    "id": 504,
+    "indus_code": "OPI_R_RPPI",
+    "checked": true
+},
+{
+    "name": "非金属矿物制品业",
+    "pId": 500,
+    "id": 505,
+    "indus_code": "OPI_R_NMPI",
+    "checked": true
+},
+{
+    "name": "黑色金属冶炼及压延加工业",
+    "pId": 500,
+    "id": 506,
+    "indus_code": "OPI_R_FMSCI",
+    "checked": true
+},
+{
+    "name": "有色金属冶炼及压延加工业",
+    "pId": 500,
+    "id": 507,
+    "indus_code": "OPI_R_NSCPI",
+    "checked": true
+},
+{
+    "name": "金属制品业",
+    "pId": 600,
+    "id": 601,
+    "indus_code": "OPI_E_MPI",
+    "checked": true
+},
+{
+    "name": "通用设备制造业",
+    "pId": 600,
+    "id": 602,
+    "indus_code": "OPI_E_GEMI",
+    "checked": true
+},
+{
+    "name": "专用设备制造业",
+    "pId": 600,
+    "id": 603,
+    "indus_code": "OPI_E_SEMI",
+    "checked": true
+},
+{
+    "name": "汽车制造业",
+    "pId": 600,
+    "id": 604,
+    "indus_code": "OPI_E_AMI",
+    "checked": true
+},
+{
+    "name": "铁路船舶及其他交通运输设备制造业",
+    "pId": 600,
+    "id": 605,
+    "indus_code": "OPI_E_MRST",
+    "checked": true
+},
+{
+    "name": "电气机械及器材制造业",
+    "pId": 600,
+    "id": 606,
+    "indus_code": "OPI_E_EMEM",
+    "checked": true
+},
+{
+    "name": "计算机、通信和其他电子设备制造业",
+    "pId": 600,
+    "id": 607,
+    "indus_code": "OPI_E_CCEE",
+    "checked": true
+},
+{
+    "name": "仪器仪表制造业",
+    "pId": 600,
+    "id": 608,
+    "indus_code": "OPI_E_IMI",
+    "checked": true
+},
+{
+    "name": "煤炭开采和洗选业",
+    "pId": 700,
+    "id": 701,
+    "indus_code": "OPI_M_COAL",
+    "checked": true
+},
+{
+    "name": "石油和天然气开采业",
+    "pId": 700,
+    "id": 702,
+    "indus_code": "OPI_M_OIL",
+    "checked": true
+},
+{
+    "name": "黑色金属矿采选业",
+    "pId": 700,
+    "id": 703,
+    "indus_code": "OPI_M_FFM",
+    "checked": true
+},
+{
+    "name": "有色金属矿采选业",
+    "pId": 700,
+    "id": 704,
+    "indus_code": "OPI_M_NFFM",
+    "checked": true
+},
+{
+    "name": "非金属矿及其他矿采选业",
+    "pId": 700,
+    "id": 705,
+    "indus_code": "OPI_M_OPO",
+    "checked": true
+},
+{
+    "name": "农林牧渔业",
+    "pId": 800,
+    "id": 801,
+    "indus_code": "OPI_A_AGC",
+    "checked": true
+},
+{
+    "name": "建筑业",
+    "pId": 900,
+    "id": 901,
+    "indus_code": "OPI_B_CB",
+    "checked": true
+},
+{
+    "name": "其他制造业",
+    "pId": 1000,
+    "id": 1001,
+    "indus_code": "OPI_O_OMI",
+    "checked": true
+},
+{
+    "name": "废品废料",
+    "pId": 1000,
+    "id": 1002,
+    "indus_code": "OPI_O_WW",
+    "checked": true
+}
+]

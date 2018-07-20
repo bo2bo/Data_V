@@ -411,9 +411,11 @@ define(['jquery', 'echarts'], function ($, echarts) {
                 dom: params.dom,
                 dataZoom: params.dataZoom,
                 markLine: params.markLine,
+                markArea: params.markArea,
                 time: params.time,
                 option: option,
-                allLine: params.allLine
+                allLine: params.allLine,
+                timeSlot: params.timeSlot
             })
         },
         barLineOption: function (param) {
@@ -528,7 +530,9 @@ define(['jquery', 'echarts'], function ($, echarts) {
                         option: param.option,
                         dataZoom: param.dataZoom,
                         markLine: param.markLine,
-                        time: param.time
+                        markArea: param.markArea,
+                        time: param.time,
+                        timeSlot: param.timeSlot
                     });
                 },
                 error: function (err) {
@@ -561,12 +565,13 @@ define(['jquery', 'echarts'], function ($, echarts) {
                 chartEnd = params.end;
             });
             // 设置dataZoom初始值
+            var jumpDataLen, historyTime;
             if (option.series[historyIndex + 1] != undefined) {
-                var jumpDataLen = option.series[historyIndex + 1].data.length;
-                var historyTime = option.series[historyIndex].data[option.series[historyIndex].data.length - 13 + jumpDataLen][0];
+                jumpDataLen = option.series[historyIndex + 1].data.length;
+                historyTime = option.series[historyIndex].data[option.series[historyIndex].data.length - (param.timeSlot + 1) + jumpDataLen][0];
             } else {
-                var jumpDataLen = option.series[historyIndex - 1].data.length;
-                var historyTime = option.series[historyIndex].data[option.series[historyIndex].data.length - 13 + jumpDataLen][0];
+                jumpDataLen = option.series[historyIndex - 1].data.length;
+                historyTime = option.series[historyIndex].data[option.series[historyIndex].data.length - (param.timeSlot + 1) + jumpDataLen][0];
             }
             var month = new Date(historyTime).getMonth() + 1;
             if (month < 10) {
@@ -595,15 +600,17 @@ define(['jquery', 'echarts'], function ($, echarts) {
                         }
                     };
                 }
-                if (param.markLine) {
-                    for (var i = 0; i < jumpSeriesIndex.length; i++) {
-                        if (option.series[jumpSeriesIndex[i]].data.length == 1) {
-                            continue;
-                        } else {
+                for (var i = 0; i < jumpSeriesIndex.length; i++) {
+                    if (option.series[jumpSeriesIndex[i]].data.length == 1) {
+                        continue;
+                    } else {
+                        if (param.markLine) {
                             option.series[jumpSeriesIndex[i]].markLine = workCommon.markLineConfig;
-                            option.series[jumpSeriesIndex[i]].markArea = workCommon.markAreaConfig;
-                            break;
                         }
+                        if (param.markArea) {
+                            option.series[jumpSeriesIndex[i]].markArea = workCommon.markAreaConfig;
+                        }
+                        break;
                     }
                 }
                 if (param.dataZoom) {

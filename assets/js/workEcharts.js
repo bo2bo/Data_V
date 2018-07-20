@@ -36,8 +36,10 @@ define(['jquery', 'echarts', 'workCommon'], function ($, echarts, workCommon) {
             dom: jumpLineChart,
             dataZoom: true,
             markLine: true,
+            markArea: true,
             time: 100,
-            allLine: true
+            allLine: true,
+            timeSlot: 12
         });
         // 多线闪动
         workCommon.getLineOption({
@@ -46,8 +48,10 @@ define(['jquery', 'echarts', 'workCommon'], function ($, echarts, workCommon) {
             dom: doubleLineChart,
             dataZoom: true,
             markLine: true,
+            markArea: true,
             time: 100,
-            allLine: true
+            allLine: true,
+            timeSlot: 12
         })
         // 折线柱状图
         workCommon.getLineOption({
@@ -56,8 +60,10 @@ define(['jquery', 'echarts', 'workCommon'], function ($, echarts, workCommon) {
             dom: barLineChart,
             dataZoom: true,
             markLine: true,
+            markArea: true,
             time: 100,
-            allLine: false
+            allLine: false,
+            timeSlot: 12
         });
 
         // 色温图

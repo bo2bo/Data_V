@@ -450,17 +450,11 @@ define(['jquery', 'echarts', 'workCommon', 'jqueryZtreeCore', 'jqueryZtreeExchec
             //点击右侧柱状图更新左边的柱图
             macro_opi_data.on("click", function () {
                 params = opiData.tooltipParamsClone;
-
-                //传递的点击信息
-                var OPIInfo = button_name + '||' + params[0].name;
                 staffDataIndex = params[0].dataIndex; //线中的第几个点
-
                 if (opiData.paramOpiData.datatypename == "_abs_r") { //总量的第几个点
                     opiData.dataindex = staffDataIndex;
-                    var button_name = 'abs';
                 } else if (opiData.paramOpiData.datatypename == "_inc_r") { //增量的第几个点
                     opiData.dataindex = staffDataIndex;
-                    var button_name = 'inc';
                 }
 
                 var tips = params[0].name + '</br>'; //浮动提示的标题,当前日期
@@ -506,7 +500,6 @@ define(['jquery', 'echarts', 'workCommon', 'jqueryZtreeCore', 'jqueryZtreeExchec
                 var mCatoryName = resjson1[k].itemName;
                 var mColor = mColorSystemOpi[mCatoryName];
                 mThisTimeColors.push(mColor);
-
             }
 
             /*柱状比例图*/
@@ -571,7 +564,6 @@ define(['jquery', 'echarts', 'workCommon', 'jqueryZtreeCore', 'jqueryZtreeExchec
                             var detailResjson = [];
                             var detailDataLen = thisTimeAllData.length; //不同的节点对应的相同月份的不同的值的数组
                             var detailX = [];
-                            var detailV = [];
                             var detailSerie = [];
                             var detailBase = params.value / 100;
                             option3 = { //macro_opi_detail的option配置
@@ -764,11 +756,10 @@ define(['jquery', 'echarts', 'workCommon', 'jqueryZtreeCore', 'jqueryZtreeExchec
                             }
                             macro_opi_detail.resize();
                             macro_opi_detail.setOption(option3);
-                            // charArr.push(macro_opi_detail);
                             return params.seriesName + '<br/>value:' + params.value;
                         },
                         showDelay: 200
-                    }, //到此option3的配置已完成
+                    },
                     grid: {
                         borderWidth: 0,
                         borderColor: "#6898CD",
@@ -1424,7 +1415,6 @@ define(['jquery', 'echarts', 'workCommon', 'jqueryZtreeCore', 'jqueryZtreeExchec
                 detailColorData = [];
             var colorSystemOpi = JSON.parse(JSON.stringify(opiData.colorData));
             var opiCatagory = opiData.treeData;
-            //遍历opiCatagory并将indus_code归并到colorSystem
             for (var i = 0; i < opiCatagory.length; i++) {
                 if (opiCatagory[i].pId != 0) {
                     //取巧,获取colorSystem的数值
@@ -1448,7 +1438,7 @@ define(['jquery', 'echarts', 'workCommon', 'jqueryZtreeCore', 'jqueryZtreeExchec
                 }
             }
             for (var i = 0; i < colorSystemOpi.length; i++) {
-                var catagoryCountOpi = colorSystemOpi[i].cCount; //8,9,1,1,4
+                var catagoryCountOpi = colorSystemOpi[i].cCount;
                 //该大类内有两个小分类,那么分别取成start和end就可以了
                 if (catagoryCountOpi == 2) {
                     colorSystemOpi[i].indus[0].color = colorSystemOpi[i].startColor;

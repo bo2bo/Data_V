@@ -9,7 +9,9 @@ require.config({
         jqueryZtreeExcheck: 'dist/jquery.ztree.excheck.min',
         echartCommon: 'echartCommon',
         selfCommon: 'selfEchartsCommon',
-        workCommon: 'workEchartsCommon'
+        workCommon: 'workEchartsCommon',        
+        mousewheel: 'dist/jquery.mousewheel',
+        mCustomScrollBar: 'dist/jquery.mCustomScrollbar',
     },
     shim: {
         jqueryZtreeExcheck: {

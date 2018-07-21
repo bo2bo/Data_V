@@ -263,7 +263,7 @@ define(['jquery', 'echarts'], function ($, echarts) {
                 show: true,
                 type: 'cross',
                 lineStyle: {
-                    type: 'dashed',
+                    type: 'line',
                     width: 1
                 }
             },
@@ -650,7 +650,8 @@ define(['jquery', 'echarts'], function ($, echarts) {
                     var serie = [];
                     resjson = workCommon.getStackOptionData({
                         url: params.url,
-                        chartType: params.chartType
+                        chartType: params.chartType,
+                        datatypeName: params.datatypeName
                     });
                     for (let i = 0; i < resjson.length; i++) {
                         var item, serieData = workCommon.time2Datetime(resjson[i].children).yAxisData
@@ -707,7 +708,10 @@ define(['jquery', 'echarts'], function ($, echarts) {
             $.ajax({
                 type: "get",
                 url: param.url,
-                async: false, //异步
+                async: false,
+                data: {
+                    'datatypeName': param.datatypeName
+                },
                 success: function (result) {
                     resjson = result;
                     if (param.chartType == 'struct') {

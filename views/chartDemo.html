@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=640">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>EchartJs Demo</title>
+    <link rel="stylesheet" href="./../assets/css/base.css">
+    <link rel="stylesheet" href="./../assets/css/zTreeStyle.css">
+    <link rel="stylesheet" href="./../assets/css/jquery.mCustomScrollbar.css">
+    <link rel="stylesheet" href="./../assets/css/chartDemo.css">
+</head>
+
+<body>
+    <div class="content">
+        <div class="macro">
+            <div class="tree-title">
+                <i class="down-icon"></i>OPI分项选择
+                <span class="tree-bubble">37</span>
+            </div>
+            <div class="left-tree" node="tree-list">
+                <ul id="treeDemoOpi" class="ztree"></ul>
+            </div>
+            <div class="tree-foot" node="tree-list">
+                <a href="javascript:;" class="tree-reset-btn">重置</a>
+                <a href="javascript:;" class="tree-submit-btn">确定</a>
+            </div>
+            <div class="chart-box">
+                <div class="clear">
+                    <ul class="data-type-box">
+                        <li data-type-name="_abs_r" class="active">总量</li>
+                        <li data-type-name="_inc_r">增量</li>
+                        <li data-type-name="_abs_yoy_r">同比增速</li>
+                    </ul>
+                    <a href="#" class="set-yaxis">切换左右轴</a>
+                </div>
+                <div id="chart-stack-left" class="chart-stack-left"></div>
+                <div id="chart-stack-right" class="chart-stack-right"></div>
+                <div id="chart-bar-middlebox" class="chart-bar-middlebox">
+                    <div id="chart-bar-middle" class="chart-bar-middle"></div>
+                    <i class="detail-close-icon"> </i>
+                </div>
+            </div>
+            <div id="legend-box"></div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="./../assets/js/dist/require.min.js"></script>
+
+<!-- 避免出现插件未加载完成就执行js代码 -->
+<script>
+    requirejs.config({
+        baseUrl: './../assets/js'
+    });
+</script>
+<script src="./../assets/js/config.js"></script>
+<script>
+    require([
+        './../assets/js/chartDemo.js'
+    ])
+</script>
+
+</html>

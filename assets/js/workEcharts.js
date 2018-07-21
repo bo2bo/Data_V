@@ -12,7 +12,8 @@ define(['jquery', 'echarts', 'workCommon'], function ($, echarts, workCommon) {
         var stackChartOption = workCommon.getStackOption({
             url: "./../assets/js/json/stackData.json",
             title: '堆积图',
-            chartType: 'struct'
+            chartType: 'struct',
+            datatypeName: ''
         });
         stackChart.setOption(stackChartOption);
         workCommon.getPieData({

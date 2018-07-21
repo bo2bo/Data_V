@@ -196,7 +196,6 @@ define(['jquery', 'echarts', 'workCommon', 'jqueryZtreeCore', 'jqueryZtreeExchec
                 treeInit: function () {
                     return $.fn.zTree.init($("#treeDemoOpi"), opiTreeInfo.setting, opiTreeInfo.zNodes);
                 },
-
             }
             treeObjOpi = opiTreeInfo.treeInit(); //树状图的初始化代码
             //填充最下边的"legendbox"legend列表
@@ -255,6 +254,7 @@ define(['jquery', 'echarts', 'workCommon', 'jqueryZtreeCore', 'jqueryZtreeExchec
             getOpiRawData("abs"); //总量
             getOpiRawData("inc"); //增量
             getOpiRawData("yoygrew"); //同比增量
+            debugger;
             opiData.opiRun(); //初始化右侧的面积柱状图	
 
         }
@@ -318,7 +318,6 @@ define(['jquery', 'echarts', 'workCommon', 'jqueryZtreeCore', 'jqueryZtreeExchec
         })
         $("body").on("click", "#setyaxisopi", function () { //同比增量中的切换左右轴
             var selectTrade = $("#treeDemoOpi ul .checkbox_true_full");
-            var selectTradeLen = selectTrade.length;
             var str = '';
             $("#treeDemoOpi ul .checkbox_true_full").each(function (index, e) {
                 if (opiData.rightArr.length) {
@@ -412,7 +411,10 @@ define(['jquery', 'echarts', 'workCommon', 'jqueryZtreeCore', 'jqueryZtreeExchec
             }
 
             //行业映射
-            var tradeClass = genColorSeriesOpi().detailColorData;
+            var tradeClass = genColorSeriesOpi({
+                colorData:opiData.colorData,
+                treeData:opiData.treeData
+            }).detailColorData;
 
             ////当前时间节点数据
             var thisTimeAllData = [];
@@ -495,7 +497,10 @@ define(['jquery', 'echarts', 'workCommon', 'jqueryZtreeCore', 'jqueryZtreeExchec
             })
 
             var mThisTimeColors = []; //当前被选中的元素节点的颜色数组
-            var mColorSystemOpi = genColorSeriesOpi().mColorMapOpi;
+            var mColorSystemOpi = genColorSeriesOpi({
+                colorData:opiData.colorData,
+                treeData:opiData.treeData
+            }).mColorMapOpi;
             for (var k = 0; k < resjson1.length; k++) {
                 var mCatoryName = resjson1[k].itemName;
                 var mColor = mColorSystemOpi[mCatoryName];
@@ -866,7 +871,10 @@ define(['jquery', 'echarts', 'workCommon', 'jqueryZtreeCore', 'jqueryZtreeExchec
                     ////取每个时间段内第k个数
                     for (var t = 0; t < timeLen; t++) { //timeLen=resjson1[0].children.length
                         var timeSeries = [];
-                        var tradeClass = genColorSeriesOpi().ratioData;
+                        var tradeClass = genColorSeriesOpi({
+                            colorData:opiData.colorData,
+                            treeData:opiData.treeData
+                        }).ratioData;
                         var thisPercentCount = 0;
                         for (var k = 0; k < resjson1.length; k++) {
                             timeSeries.push({
@@ -1370,7 +1378,7 @@ define(['jquery', 'echarts', 'workCommon', 'jqueryZtreeCore', 'jqueryZtreeExchec
                 url: opiData.url,
                 data: {
                     'datatypeName': thisParamsType,
-                    'indusId': $("#rootIndustry").val()
+                    // 'indusId': $("#rootIndustry").val()
                 },
                 async: false, //同步
                 success: function (result) {
@@ -1409,12 +1417,12 @@ define(['jquery', 'echarts', 'workCommon', 'jqueryZtreeCore', 'jqueryZtreeExchec
         /**
          * 生成OPI中右侧大图color对应关系
          */
-        function genColorSeriesOpi() {
+        function genColorSeriesOpi(param) {
             var mColorMapOpi = {},
                 ratioData = [],
                 detailColorData = [];
-            var colorSystemOpi = JSON.parse(JSON.stringify(opiData.colorData));
-            var opiCatagory = opiData.treeData;
+            var colorSystemOpi = JSON.parse(JSON.stringify(param.colorData));
+            var opiCatagory = param.treeData;
             for (var i = 0; i < opiCatagory.length; i++) {
                 if (opiCatagory[i].pId != 0) {
                     //取巧,获取colorSystem的数值

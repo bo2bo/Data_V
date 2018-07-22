@@ -1,24 +1,26 @@
-define(['jquery', 'echarts', 'workCommon', 'jqueryZtreeCore', 'jqueryZtreeExcheck', 'mousewheel', 'mCustomScrollBar'], function ($, echarts, workCommon, ztreeCore, jqueryZtreeExcheck, mousewheel, mCustomScrollBar) {
-    $(function () {
+define(['jquery', 'echarts', 'workCommon', 'jqueryZtreeCore', 'jqueryZtreeExcheck', 'mousewheel', 'mCustomScrollBar'], function($, echarts, workCommon, ztreeCore, jqueryZtreeExcheck, mousewheel, mCustomScrollBar) {
+    $(function() {
         var paramObj = {
             url: 'http://area.tjresearch.com:8082/newArea//api/opiData/getOpiData',
             chartType: 'bar',
             dataTypeName: '_abs_r',
-            treeData: function () {
+            // 属性数据
+            treeData: function() {
                 var resjson;
                 $.ajax({
                     type: "get",
                     url: './../assets/js/json/treeData.json',
                     async: false,
-                    success: function (result) {
+                    success: function(result) {
                         resjson = result;
                     },
-                    error: function (err) {
+                    error: function(err) {
                         console.log(err)
                     }
                 });
                 return resjson;
             }(),
+            // 颜色数据
             colorData: [{
                     startColor: [236, 251, 239],
                     endColor: [69, 218, 95],
@@ -87,7 +89,7 @@ define(['jquery', 'echarts', 'workCommon', 'jqueryZtreeCore', 'jqueryZtreeExchec
             treeData: paramObj.treeData,
             dom: "#treeDemoOpi"
         });
-        $(".macro .tree-title").on("click", function (e) {
+        $(".macro .tree-title").on("click", function(e) {
             $("[node='tree-list']").toggle();
         });
 
@@ -113,23 +115,23 @@ define(['jquery', 'echarts', 'workCommon', 'jqueryZtreeCore', 'jqueryZtreeExchec
                         }
                     },
                     callback: {
-                        onClick: function (event, treeId, treeNode, clickFlag) {
+                        onClick: function(event, treeId, treeNode, clickFlag) {
                             treeDomobj.checkNode(treeNode, !treeNode.checked, true);
                         }
                     }
                 },
                 zNodes: param.treeData,
-                treeInit: function () {
+                treeInit: function() {
                     return $.fn.zTree.init($(param.dom), treeInfo.setting, treeInfo.zNodes);
                 },
             };
             var treeDomobj = treeInfo.treeInit();
 
-            $(".tree-reset-btn").click(function () {
+            $(".tree-reset-btn").click(function() {
                 $.fn.zTree.init($(param.dom), treeInfo.setting, treeInfo.zNodes);
                 $("[node='tree-list']").hide();
             })
-            $(".tree-submit-btn").click(function () {
+            $(".tree-submit-btn").click(function() {
                 //传递选择的信息
                 var nodesOpi = treeDomobj.getCheckedNodes(true);
                 var treeSelectArrOpi = [];
@@ -151,10 +153,10 @@ define(['jquery', 'echarts', 'workCommon', 'jqueryZtreeCore', 'jqueryZtreeExchec
             datatypeName: paramObj.dataTypeName
         });
         chartStackRight.setOption(chartStackRightOption);
-        chartStackRight.on('click', function (params) {
-            debugger;
-        })
-        // 右侧堆积图option
+        chartStackRight.on('click', function(params) {
+                debugger;
+            })
+            // 右侧堆积图option
         function stackOption(params) {
             var resjson, xAxisData, legendData = [],
                 colorSeries;
@@ -179,7 +181,7 @@ define(['jquery', 'echarts', 'workCommon', 'jqueryZtreeCore', 'jqueryZtreeExchec
                 dataZoom: workCommon.dataZoomConfig,
                 xAxis: workCommon.xAxisConfig,
                 yAxis: [workCommon.yAxisConfig, workCommon.yAxisConfig],
-                series: function () {
+                series: function() {
                     var serie = [];
                     resjson = workCommon.getStackOptionData({
                         url: params.url,
@@ -190,6 +192,7 @@ define(['jquery', 'echarts', 'workCommon', 'jqueryZtreeCore', 'jqueryZtreeExchec
                         colorData: paramObj.colorData,
                         treeData: paramObj.treeData
                     }).mColorMapOpi;
+                    debugger;
                     for (let i = 0; i < resjson.length; i++) {
                         if (resjson[i].itemName.split('_').length < 3) {
                             continue;
@@ -236,8 +239,8 @@ define(['jquery', 'echarts', 'workCommon', 'jqueryZtreeCore', 'jqueryZtreeExchec
             option.xAxis.data = xAxisData;
             option.legend.show = false;
             option.legend.data = legendData;
-            option.tooltip.formatter = function(params){
-                return ;
+            option.tooltip.formatter = function(params) {
+                return;
             }
             return option;
         }

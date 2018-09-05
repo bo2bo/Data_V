@@ -141,6 +141,16 @@ define(['jquery', 'Chart'], function($, Chart) {
                         backgroundColor: '#fffc00',
                         borderColor: '#fffc00',
                         data: [4, 7, 9, 4, 7, 3, 5],
+                    },
+                    {
+                        type: 'line',
+                        label: 'Dataset 2',
+                        backgroundColor: Chart.helpers.color('blue').alpha(0.2).rgbString(),
+                        borderColor: 'transparent',
+                        data: [, , , , 9, 9, 9],
+                        pointRadius: 0,
+                        pointHoverRadius: 0,
+                        borderWidth: "0",
                     }]
                 },
                 options: {

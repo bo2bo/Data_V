@@ -4,7 +4,8 @@ require.config({
     paths: {
         jquery: 'dist/jquery.min',
         echarts: 'dist/echarts.min',
-        Chart: 'dist/Chart.min',
+        // Chart: 'dist/Chart.min',
+        Chart: 'dist/Chart.bundle.min',
         jqueryZtreeCore: 'dist/jquery.ztree.core.min',
         jqueryZtreeExcheck: 'dist/jquery.ztree.excheck.min',
         echartCommon: 'echartCommon',

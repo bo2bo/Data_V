@@ -2,7 +2,8 @@
     width: 1200px;
     margin: 0 auto;
 }
-#drugLineChart{
+#drugLineChart,
+#addPointsChart{
     width: 1200px;
     height: 600px;
 }
